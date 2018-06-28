@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/endorama/two-factor-authenticator/totp"
@@ -19,22 +20,22 @@ const (
 )
 
 type Key struct {
-	Name     string  `json:"name,string"`
-	Type     KeyType `json:"type,int8"`
-	Digits   int     `json:"digits,int"`
-	Interval int     `json:"interval,int"`
-	Counter  int     `json:"counter,int"`
-	Secret   string  `json:"secret,string"`
+	Name     string       `json:"name,string"`
+	Type     KeyType      `json:"type,int8"`
+	Digits   int          `json:"digits,int"`
+	Interval int          `json:"interval,int"`
+	Counter  int          `json:"counter,int"`
+	secret   SecretString `json:"-"`
 }
 
-func NewKey(name, secret string) Key {
+func NewKey(name string) Key {
 	return Key{
 		Name:     name,
 		Type:     TOTP_TOKEN,
 		Digits:   6,
 		Interval: 30,
 		Counter:  1,
-		Secret:   secret,
+		secret:   newSecretString(name),
 	}
 }
 
@@ -48,6 +49,7 @@ func KeyFromStorage(storage Storage, name string) Key {
 	if err != nil {
 		fmt.Errorf("%s", err)
 	}
+	key.secret = newSecretString(name)
 	return key
 }
 
@@ -76,14 +78,27 @@ func (k *Key) ExpiresIn() int {
 }
 
 func (k *Key) totpToken() int {
-	return totp.Generate([]byte(k.Secret), k.Digits, k.Interval)
+	secret, err := k.secret.Value()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return totp.Generate(secret, k.Digits, k.Interval)
 }
 
 // Generate a new HOTP token and increament counter
 func (k *Key) hotpToken() int {
 	currentCounter := k.Counter
 	k.Counter++
-	return totp.Generate([]byte(k.Secret), k.Digits, currentCounter)
+
+	secret, err := k.secret.Value()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return totp.Generate(secret, k.Digits, currentCounter)
+}
+
+func (k *Key) Secret(secret string) error {
+	return k.secret.Set([]byte(secret))
 }
 
 // func (this Key) MarshalJSON() ([]byte, error) {

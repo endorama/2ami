@@ -139,12 +139,16 @@ func add(storage Storage, name string, digits interface{}, interval interface{})
 	}
 	secret = strings.TrimSuffix(secret, "\n")
 
-	key := NewKey(name, secret)
+	key := NewKey(name)
 	if digits != nil {
 		key.Digits = convertStringToInt(digits.(string))
 	}
 	if interval != nil {
 		key.Interval = convertStringToInt(interval.(string))
+	}
+	err = key.Secret(secret)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	if debug {
