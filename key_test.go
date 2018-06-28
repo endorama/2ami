@@ -3,29 +3,22 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-	"reflect"
-	"testing"
-)
+// func TestUnmarshalJSON(t *testing.T) {
+// 	jsonString := "{\"name\": \"Test\", \"digits\": 8, \"interval\": 30}"
 
-func TestUnmarshalJSON(t *testing.T) {
-	jsonString := "{\"name\": \"Test\", \"digits\": 8, \"interval\": 30}"
+// 	data := Key{}
+// 	err := json.Unmarshal([]byte(jsonString), &data)
+// 	if err != nil {
+// 		fmt.Errorf("%s", err)
+// 	}
 
-	data := Key{}
-	err := json.Unmarshal([]byte(jsonString), &data)
-	if err != nil {
-		fmt.Errorf("%s", err)
-	}
+// 	test := Key{
+// 		Name:     "Test",
+// 		Digits:   8,
+// 		Interval: 30,
+// 	}
 
-	test := Key{
-		Name:     "Test",
-		Digits:   8,
-		Interval: 30,
-	}
-
-	if !reflect.DeepEqual(data, test) {
-		t.Errorf("struct is not as expected: %+v %+v", data, test)
-	}
-}
+// 	if !reflect.DeepEqual(data, test) {
+// 		t.Errorf("struct is not as expected: %+v %+v", data, test)
+// 	}
+// }
