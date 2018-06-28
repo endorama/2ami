@@ -16,13 +16,10 @@ import (
 	"github.com/atotto/clipboard"
 )
 
-const (
-	VERSION = "0.1.0-alpha"
-)
-
 var (
 	debug   = false
 	verbose = false
+	version = "dev"
 )
 
 func usage() string {
@@ -116,7 +113,7 @@ func main() {
 		os.Exit(0)
 	}
 	if arguments["--version"].(bool) {
-		fmt.Println(VERSION)
+		fmt.Println(version)
 		os.Exit(0)
 	}
 
