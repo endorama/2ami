@@ -1,0 +1,12 @@
+# .goreleaser.yml
+# Build customization
+builds:
+  - binary: two-factor-authenticator
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+
+git:
+  short_hash: true
