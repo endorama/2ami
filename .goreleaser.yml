@@ -3,7 +3,7 @@
 builds:
   - binary: two-factor-authenticator
     goos:
-      - darwin
+      # - darwin
       - linux
     goarch:
       - amd64
