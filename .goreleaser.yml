@@ -10,3 +10,19 @@ builds:
 
 git:
   short_hash: true
+
+release:
+  prerelease: true
+
+sign:
+  cmd: gpg2
+  args: ["-u", "edoardo.tenani@protonmail.com", "--output", "${signature}", "--detach-sign", "${artifact}"]
+  artifacts: all
+
+changelog:
+  filters:
+    # commit messages matching the regexp listed here will be removed from
+    # the changelog
+    # Default is empty
+    exclude:
+      - '\(chore\)'
