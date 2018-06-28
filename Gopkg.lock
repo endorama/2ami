@@ -3,9 +3,21 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/99designs/keyring"
+  packages = ["."]
+  revision = "ccd0779e6f10beb398c339c6fe4557e709dbf40c"
+
+[[projects]]
+  branch = "master"
   name = "github.com/atotto/clipboard"
   packages = ["."]
   revision = "5e2c7bddca04488284428a201e4a15615f7a5074"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/aulanov/go.dbus"
+  packages = ["."]
+  revision = "25c3068a42a0b50b877953fb249dbcffc6bd1bca"
 
 [[projects]]
   name = "github.com/boltdb/bolt"
@@ -14,10 +26,55 @@
   version = "v1.3.1"
 
 [[projects]]
+  name = "github.com/danieljoos/wincred"
+  packages = ["."]
+  revision = "412b574fb496839b312a75fba146bd32a89001cf"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/docopt/docopt.go"
   packages = ["."]
   revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
+
+[[projects]]
+  name = "github.com/dvsekhvalnov/jose2go"
+  packages = [
+    ".",
+    "aes",
+    "arrays",
+    "base64url",
+    "compact",
+    "kdf",
+    "keys/ecc",
+    "padding"
+  ]
+  revision = "f21a8cedbbae609f623613ec8f81125c243212e6"
+  version = "v1.3"
+
+[[projects]]
+  name = "github.com/godbus/dbus"
+  packages = ["."]
+  revision = "a389bdde4dd695d414e47b755e95e72b7826432c"
+  version = "v4.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gsterjov/go-libsecret"
+  packages = ["."]
+  revision = "a6f4afe4910cad8688db3e0e9b9ac92ad22d54e1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/keybase/go-keychain"
+  packages = ["."]
+  revision = "70b98e9c8d754db775c5bd3b2de3670cc76f1825"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mitchellh/go-homedir"
+  packages = ["."]
+  revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -27,13 +84,22 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "63fc586f45fe72d95d5240a5d5eb95e6503907d3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2a90b1e5ad4b5c0c9fa3bf32f33967dc99de65c4dacf65329bd1ab2513482417"
+  inputs-digest = "aa3ce892fadbbb0b638db7e05a0c2a3437f0bb64753b36de2db369ab43d72cc6"
   solver-name = "gps-cdcl"
   solver-version = 1
