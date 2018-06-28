@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	docopt "github.com/docopt/docopt.go"
@@ -97,10 +96,10 @@ func main() {
 		token := generate(storage, name)
 
 		if arguments["--clip"].(bool) {
-			clipboard.WriteAll(strconv.Itoa(token.Value))
+			clipboard.WriteAll(token.Value)
 		} else {
 			if verbose {
-				fmt.Printf("%d ( %d seconds left )\n", token.Value, token.ExpiresIn)
+				fmt.Printf("%s ( %d seconds left )\n", token.Value, token.ExpiresIn)
 			} else {
 				fmt.Println(token.Value)
 			}
@@ -170,15 +169,15 @@ func add(storage Storage, name string, digits interface{}, interval interface{})
 }
 
 func generate(storage Storage, name string) struct {
-	Value     int
+	Value     string
 	ExpiresIn int
 } {
 	key := KeyFromStorage(storage, name)
 	return struct {
-		Value     int
+		Value     string
 		ExpiresIn int
 	}{
-		Value:     key.GenerateToken(),
+		Value:     tokenFormatter("google-authenticator", key.Digits, key.GenerateToken()),
 		ExpiresIn: key.ExpiresIn(),
 	}
 }
