@@ -101,6 +101,10 @@ func (k *Key) Secret(secret string) error {
 	return k.secret.Set([]byte(secret))
 }
 
+func (k *Key) Delete() error {
+	return k.secret.Remove()
+}
+
 // func (this Key) MarshalJSON() ([]byte, error) {
 // 	m := map[string]interface{}{} // ideally use make with the right capacity
 // 	m["digits"] = this.Digits
