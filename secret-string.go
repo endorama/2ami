@@ -18,7 +18,10 @@ type SecretString struct {
 
 func newSecretString(name string) SecretString {
 	ring, err := keyring.Open(keyring.Config{
-		AllowedBackends:         []keyring.BackendType{keyring.SecretServiceBackend},
+		AllowedBackends: []keyring.BackendType{
+			keyring.SecretServiceBackend,
+			keyring.KeychainBackend,
+		},
 		ServiceName:             "two-factor-authenticator",
 		LibSecretCollectionName: "login",
 	})
