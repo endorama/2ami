@@ -56,3 +56,7 @@ func (s *SecretString) Value() ([]byte, error) {
 	}
 	return i.Data, nil
 }
+
+func (s *SecretString) Remove() error {
+	return s.ring.Remove(s.Name)
+}
