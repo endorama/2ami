@@ -227,7 +227,14 @@ func deleteAllKeys(storage Storage) {
 }
 
 func remove(storage Storage, name string) {
-	err := storage.RemoveKey(name)
+	key := KeyFromStorage(storage, name)
+
+	err := key.Delete()
+	if err != nil {
+		fmt.Printf("%+v\n", err)
+		log.Fatal(err)
+	}
+	err = storage.RemoveKey(name)
 	if err != nil {
 		// switch err := errors.Cause(err).(type) {
 		// default:
