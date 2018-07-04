@@ -83,7 +83,11 @@ func (k *Key) totpToken() int {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return totp.Generate(secret, k.Digits, k.Interval)
+	byteKey, err := base32StringToByte(string(secret))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return totp.Generate(byteKey, k.Digits, k.Interval)
 }
 
 // Generate a new HOTP token and increament counter
