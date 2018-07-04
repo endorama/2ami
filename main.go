@@ -231,8 +231,12 @@ func remove(storage Storage, name string) {
 
 	err := key.Delete()
 	if err != nil {
-		fmt.Printf("%+v\n", err)
-		log.Fatal(err)
+		if strings.HasPrefix(err.Error(), "Item not found") {
+			log.Output(2, "Key is not present in keyring, skipping deletion")
+		} else {
+			fmt.Printf("%+v\n", err)
+			log.Fatal(err)
+		}
 	}
 	err = storage.RemoveKey(name)
 	if err != nil {
