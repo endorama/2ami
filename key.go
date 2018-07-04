@@ -68,7 +68,8 @@ func (k *Key) GenerateToken() int {
 	// case HOTP_TOKEN:
 	// 	return k.hotpToken()
 	default:
-		panic("Key Type is wrong.")
+		panic("Unknown key type. Valid type: TOTP")
+		// panic("Unknown key type. Valid type: TOTP or HOTP")
 	}
 }
 
