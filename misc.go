@@ -4,9 +4,11 @@
 package main
 
 import (
+	"encoding/base32"
 	"log"
 	"os/user"
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -25,4 +27,8 @@ func convertStringToInt(value string) (returnValue int) {
 		log.Fatal(err)
 	}
 	return returnValue
+}
+
+func base32StringToByte(data string) ([]byte, error) {
+	return base32.StdEncoding.DecodeString(strings.ToUpper(data))
 }
