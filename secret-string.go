@@ -49,7 +49,6 @@ func (s *SecretString) Set(data []byte) error {
 }
 
 func (s *SecretString) Value() ([]byte, error) {
-	fmt.Println(s.Name)
 	i, err := s.ring.Get(s.Name)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "cannot get data from keyring")
