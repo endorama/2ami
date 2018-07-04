@@ -88,13 +88,14 @@ func (k *Key) totpToken() int {
 // Generate a new HOTP token and increament counter
 func (k *Key) hotpToken() int {
 	currentCounter := k.Counter
-	k.Counter++
 
 	secret, err := k.secret.Value()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return totp.Generate(secret, k.Digits, currentCounter)
+	token := totp.Generate(secret, k.Digits, currentCounter)
+	k.Counter++
+	return token
 }
 
 func (k *Key) Secret(secret string) error {
