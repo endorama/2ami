@@ -53,6 +53,9 @@ func (s *SecretString) Value() ([]byte, error) {
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "cannot get data from keyring")
 	}
+	if i.Data == nil {
+		return []byte{}, errors.New("empty data from keyring; was the key removed from it?")
+	}
 	return i.Data, nil
 }
 
