@@ -98,7 +98,11 @@ func (k *Key) hotpToken() int {
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := totp.Generate(secret, k.Digits, currentCounter)
+	byteKey, err := base32StringToByte(string(secret))
+	if err != nil {
+		log.Fatal(err)
+	}
+	token := totp.Generate(byteKey, k.Digits, currentCounter)
 	k.Counter++
 	return token
 }
