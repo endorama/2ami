@@ -14,8 +14,7 @@ import (
 )
 
 const (
-	dbFilename = ".2fa.db"
-	dbBucket   = "2faKeys"
+	dbBucket = "2faKeys"
 )
 
 type Storage struct {

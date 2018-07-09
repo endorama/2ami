@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	docopt "github.com/docopt/docopt.go"
@@ -26,10 +27,10 @@ func usage() string {
 	return `Two factor authenticator agent.
 
 Usage:
-  two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--verbose]
-  two-factor-authenticator generate <name> [-c|--clip] [--verbose]
-  two-factor-authenticator list [--verbose]
-  two-factor-authenticator remove <name> [--verbose]
+  two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--db=<db-path>] [--verbose]
+  two-factor-authenticator generate <name> [-c|--clip] [--db=<db-path>] [--verbose]
+  two-factor-authenticator list [--db=<db-path>] [--verbose]
+  two-factor-authenticator remove <name> [--db=<db-path>] [--verbose]
   two-factor-authenticator -h | --help
   two-factor-authenticator --version
 
@@ -43,9 +44,11 @@ Options:
   -h --help             Show this screen.
   --version             Show version.
   --verbose             Enable verbose output.
-  --digits=<digits>     Number of token digits
-  --interval=<seconds>  Interval in seconds between token generation
-  -c --clip             Copy result to the clipboard`
+  --db=<db-path>        Path to the keys database.
+  --digits=<digits>     Number of token digits.
+  --interval=<seconds>  Interval in seconds between token generation.
+  -c --clip             Copy result to the clipboard.
+`
 }
 
 func main() {
@@ -54,22 +57,30 @@ func main() {
 		fmt.Println("Enabled debug logging...")
 	}
 
-	homeFolder, err := getUserHomeFolder()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	storage := NewStorage(homeFolder, dbFilename)
-	err = storage.Init()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer storage.Close()
-
 	usage := usage()
 	arguments, _ := docopt.ParseDoc(usage)
 	if debug {
 		fmt.Println(arguments)
+	}
+
+	databaseLocation, err := getUserHomeFolder()
+	if err != nil {
+		log.Fatal(err)
+	}
+	databaseFilename := ".2fa.db"
+	if arguments["--db"] != nil {
+		db := arguments["--db"].(string)
+		databaseLocation = filepath.Dir(db)
+		databaseFilename = filepath.Base(db)
+	}
+
+	if debug {
+		fmt.Printf("Using database: %s/%s\n", databaseLocation, databaseFilename)
+	}
+
+	storage := NewStorage(databaseLocation, databaseFilename)
+	if err = storage.Init(); err != nil {
+		log.Fatal(fmt.Sprintf("Cannot get your home folder; %s", err))
 	}
 
 	verbose = arguments["--verbose"].(bool)
