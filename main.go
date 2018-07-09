@@ -9,7 +9,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	docopt "github.com/docopt/docopt.go"
@@ -63,24 +65,16 @@ func main() {
 		fmt.Println(arguments)
 	}
 
-	databaseLocation, err := getUserHomeFolder()
-	if err != nil {
-		log.Fatal(err)
-	}
-	databaseFilename := ".2fa.db"
-	if arguments["--db"] != nil {
-		db := arguments["--db"].(string)
-		databaseLocation = filepath.Dir(db)
-		databaseFilename = filepath.Base(db)
-	}
+	databaseLocation, databaseFilename := getDatabaseConfigurations(arguments["--db"])
 
 	if debug {
 		fmt.Printf("Using database: %s/%s\n", databaseLocation, databaseFilename)
 	}
 
+	os.MkdirAll(databaseLocation, 0755)
 	storage := NewStorage(databaseLocation, databaseFilename)
-	if err = storage.Init(); err != nil {
-		log.Fatal(fmt.Sprintf("Cannot get your home folder; %s", err))
+	if err := storage.Init(); err != nil {
+		log.Fatal(fmt.Sprintf("Cannot initialize database; %s", err))
 	}
 
 	verbose = arguments["--verbose"].(bool)
@@ -260,4 +254,32 @@ func remove(storage Storage, name string) {
 	}
 	log.Output(2, "Key removed")
 	os.Exit(0)
+}
+
+func getDatabaseConfigurations(dbArgument interface{}) (databaseLocation, databaseFilename string) {
+	userHome, err := getUserHomeFolder()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	databaseLocation = userHome
+	databaseFilename = ".2fa.db"
+
+	// getting XDG_CONFIG_HOME would be good
+	switch runtime.GOOS {
+	case "linux":
+		databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+		databaseFilename = "2fa.db"
+	case "darwin":
+		databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+		databaseFilename = "2fa.db"
+	}
+
+	if dbArgument != nil {
+		db := dbArgument.(string)
+		databaseLocation = filepath.Dir(db)
+		databaseFilename = filepath.Base(db)
+	}
+
+	return databaseLocation, databaseFilename
 }
