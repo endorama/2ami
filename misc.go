@@ -32,3 +32,9 @@ func convertStringToInt(value string) (returnValue int) {
 func base32StringToByte(data string) ([]byte, error) {
 	return base32.StdEncoding.DecodeString(strings.ToUpper(data))
 }
+
+func debugPrint(v string) {
+	if debug {
+		log.Println(v)
+	}
+}

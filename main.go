@@ -55,21 +55,15 @@ Options:
 
 func main() {
 	checkAndEnableDebugMode()
-	if debug {
-		fmt.Println("Enabled debug logging...")
-	}
+	debugPrint("Enabled debug logging...")
 
 	usage := usage()
 	arguments, _ := docopt.ParseDoc(usage)
-	if debug {
-		fmt.Println(arguments)
-	}
+	debugPrint(fmt.Sprint(arguments))
 
 	databaseLocation, databaseFilename := getDatabaseConfigurations(arguments["--db"])
 
-	if debug {
-		fmt.Printf("Using database: %s/%s\n", databaseLocation, databaseFilename)
-	}
+	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
 	os.MkdirAll(databaseLocation, 0755)
 	storage := NewStorage(databaseLocation, databaseFilename)
@@ -152,14 +146,11 @@ func add(storage Storage, name string, digits interface{}, interval interface{})
 		log.Fatal(err)
 	}
 
-	if debug {
-		fmt.Printf("%+v\n", key)
-	}
+	debugPrint(fmt.Sprintf("%+v", key))
 
 	marshal, _ := json.Marshal(key)
-	if debug {
-		fmt.Printf("%s\n", marshal)
-	}
+	debugPrint(fmt.Sprintf("%s", marshal))
+
 	result, err := storage.AddKey(name, []byte(marshal))
 	if err != nil {
 		log.Fatal(err)
@@ -200,9 +191,8 @@ func list(storage Storage) {
 		if err != nil {
 			fmt.Errorf("%s", err)
 		}
-		if debug {
-			fmt.Printf("%+v\n", key)
-		}
+		debugPrint(fmt.Sprintf("%+v", key))
+
 		if verbose {
 			fmt.Println(key.VerboseString())
 		} else {
