@@ -4,7 +4,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -17,12 +16,14 @@ import (
 	docopt "github.com/docopt/docopt.go"
 
 	"github.com/atotto/clipboard"
+	"github.com/mitchellh/cli"
 )
 
 var (
 	debug   = false
 	verbose = false
 	version = "dev"
+	ui      cli.Ui
 )
 
 func usage() string {
@@ -57,6 +58,18 @@ func main() {
 	checkAndEnableDebugMode()
 	debugPrint("Enabled debug logging...")
 
+	ui := cli.ColoredUi{
+		OutputColor: cli.UiColorNone,
+		InfoColor:   cli.UiColorBlue,
+		ErrorColor:  cli.UiColorRed,
+		WarnColor:   cli.UiColorYellow,
+		Ui: &cli.BasicUi{
+			Reader:      os.Stdin,
+			Writer:      os.Stdout,
+			ErrorWriter: os.Stderr,
+		},
+	}
+
 	usage := usage()
 	arguments, _ := docopt.ParseDoc(usage)
 	debugPrint(fmt.Sprint(arguments))
@@ -68,7 +81,8 @@ func main() {
 	os.MkdirAll(databaseLocation, 0755)
 	storage := NewStorage(databaseLocation, databaseFilename)
 	if err := storage.Init(); err != nil {
-		log.Fatal(fmt.Sprintf("Cannot initialize database; %s", err))
+		ui.Error(fmt.Sprintf("Cannot initialize database; %s", err))
+		os.Exit(1)
 	}
 
 	verbose = arguments["--verbose"].(bool)
@@ -78,16 +92,23 @@ func main() {
 	if arguments["add"].(bool) {
 		name := arguments["<name>"].(string)
 		if name == "" {
-			log.Fatal("name cannot be empty")
+			ui.Error("argument 'name' cannot be empty")
+			os.Exit(1)
 		}
 
-		add(storage, name, arguments["--digits"], arguments["--interval"])
+		err := add(&ui, storage, name, arguments["--digits"], arguments["--interval"])
+		if err != nil {
+			ui.Error("An unexpected error occurred. Use DEBUG=true to show logs.")
+			debugPrint(fmt.Sprintf("%s", err))
+			os.Exit(1)
+		}
 		os.Exit(0)
 	}
 	if arguments["generate"].(bool) {
 		name := arguments["<name>"].(string)
 		if name == "" {
-			log.Fatal("name cannot be empty")
+			ui.Error("argument 'name' cannot be empty")
+			os.Exit(1)
 		}
 		token := generate(storage, name)
 
@@ -95,24 +116,34 @@ func main() {
 			clipboard.WriteAll(token.Value)
 		} else {
 			if verbose {
-				fmt.Printf("%s ( %d seconds left )\n", token.Value, token.ExpiresIn)
+				ui.Info(fmt.Sprintf("%s ( %d seconds left )\n", token.Value, token.ExpiresIn))
 			} else {
-				fmt.Println(token.Value)
+				ui.Info(token.Value)
 			}
 		}
 		os.Exit(0)
 	}
 	if arguments["list"].(bool) {
-		list(storage)
+		errors := list(&ui, storage)
+		if errors != nil {
+			for _, element := range errors {
+				ui.Error(element.Error())
+			}
+			os.Exit(1)
+		}
 		os.Exit(0)
 	}
 	if arguments["remove"].(bool) {
 		name := arguments["<name>"].(string)
-		remove(storage, name)
+		err := remove(&ui, storage, name)
+		if err != nil {
+			ui.Error(err.Error())
+			os.Exit(1)
+		}
 		os.Exit(0)
 	}
 	if arguments["--version"].(bool) {
-		fmt.Println(version)
+		ui.Output(version)
 		os.Exit(0)
 	}
 
@@ -126,11 +157,10 @@ func checkAndEnableDebugMode() {
 	}
 }
 
-func add(storage Storage, name string, digits interface{}, interval interface{}) {
-	fmt.Fprintf(os.Stdout, "2fa secret for %s: ", name)
-	secret, err := bufio.NewReader(os.Stdin).ReadString('\n')
+func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval interface{}) error {
+	secret, err := ui.AskSecret(fmt.Sprintf("2fa secret for %s ( will not be printed ): ", name))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	secret = strings.TrimSuffix(secret, "\n")
 
@@ -143,7 +173,7 @@ func add(storage Storage, name string, digits interface{}, interval interface{})
 	}
 	err = key.Secret(secret)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	debugPrint(fmt.Sprintf("%+v", key))
@@ -153,12 +183,14 @@ func add(storage Storage, name string, digits interface{}, interval interface{})
 
 	result, err := storage.AddKey(name, []byte(marshal))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	if !result {
-		log.Fatal("something went wrong adding key")
+		ui.Error("something went wrong adding key")
+		os.Exit(1)
 	}
-	log.Output(2, "added key")
+	ui.Info("Key successfully added")
+	return nil
 }
 
 func generate(storage Storage, name string) struct {
@@ -175,30 +207,36 @@ func generate(storage Storage, name string) struct {
 	}
 }
 
-func list(storage Storage) {
+func list(ui cli.Ui, storage Storage) (errors []error) {
 	keys, err := storage.ListKey()
 	if err != nil {
-		log.Fatal(err)
+		return []error{err}
 	}
 
 	for _, v := range keys {
 		value, err := storage.GetKey(v)
 		if err != nil {
-			fmt.Errorf("%s", err)
+			errors = append(errors, err)
 		}
 		key := Key{}
 		err = json.Unmarshal([]byte(value), &key)
 		if err != nil {
-			fmt.Errorf("%s", err)
+			errors = append(errors, err)
 		}
 		debugPrint(fmt.Sprintf("%+v", key))
 
 		if verbose {
-			fmt.Println(key.VerboseString())
+			ui.Output(key.VerboseString())
 		} else {
-			fmt.Println(key)
+			ui.Output(key.String())
 		}
 	}
+
+	if len(errors) > 0 {
+		return errors
+	}
+
+	return nil
 }
 
 func deleteAllKeys(storage Storage) {
@@ -221,29 +259,23 @@ func deleteAllKeys(storage Storage) {
 	os.Exit(1)
 }
 
-func remove(storage Storage, name string) {
+func remove(ui cli.Ui, storage Storage, name string) error {
 	key := KeyFromStorage(storage, name)
 
 	err := key.Delete()
 	if err != nil {
 		if strings.HasPrefix(err.Error(), "Item not found") {
-			log.Output(2, "Key is not present in keyring, skipping deletion")
+			ui.Info("Key is not present in keyring, skipping deletion")
 		} else {
-			fmt.Printf("%+v\n", err)
-			log.Fatal(err)
+			return err
 		}
 	}
 	err = storage.RemoveKey(name)
 	if err != nil {
-		// switch err := errors.Cause(err).(type) {
-		// default:
-		// 	fmt.Printf("%+v\n", err)
-		// }
-		fmt.Printf("%+v\n", err)
-		log.Fatal(err)
+		return err
 	}
-	log.Output(2, "Key removed")
-	os.Exit(0)
+	ui.Info("Key removed")
+	return nil
 }
 
 func getDatabaseConfigurations(dbArgument interface{}) (databaseLocation, databaseFilename string) {
