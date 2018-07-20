@@ -35,8 +35,8 @@ orig_linux_file="dist/two-factor-authenticator-linux-amd64"
 darwin_file="dist/two-factor-authenticator-${version}-darwin-10.6-amd64"
 linux_file="dist/two-factor-authenticator-${version}-linux-amd64"
 
-mv "$orig_darwin_file" "$darwin_file"
-mv "$orig_linux_file" "$linux_file"
+mv -f "$orig_darwin_file" "$darwin_file"
+mv -f "$orig_linux_file" "$linux_file"
 
 gpg2 \
 	-u ${gpg_sign_key} \

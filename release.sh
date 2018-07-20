@@ -16,18 +16,34 @@ if [ ! $last_tag_ref == $last_commit_ref ]; then
 	exit 1
 fi
 
-github_user=endorama
-github_repo=two-factor-authenticator
+export GITHUB_USER=endorama
+export GITHUB_REPO=two-factor-authenticator
+
+echo "Verifying release"
+if gothub info | grep "name: '$version'" >/dev/null 2>&1; then
+	echo "    This version already exists."
+	echo "    Please remove it with 'gothub delete -u $GITHUB_USER -r $GITHUB_REPO -t $version'"
+	exit 0
+fi
+
 
 echo "Creating release $version"
-gothub release --user "$github_user" --repo "$github_repo" \
-			   --tag "$version" \
-			   --name "$version" \
-			   --pre-release
+if grep "-" "$version" >/dev/null 2>&1; then
+	gothub release \
+		   --tag "$version" \
+		   --name "$version" \
+		   --pre-release
+else
+	gothub release \
+		   --tag "$version" \
+		   --name "$version"
+		   # --description \
+fi
 
 for file in dist/*; do
 	echo "Adding $file"
-	gothub upload --user "$github_user" --repo "$github_repo" \
-				  --tag "$version" \
-				  --file "$file"
+	gothub upload \
+		   --tag "$version" \
+		   --name "$(basename "$file")" \
+		   --file "$file";
 done
