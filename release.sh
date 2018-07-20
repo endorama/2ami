@@ -16,33 +16,18 @@ if [ ! $last_tag_ref == $last_commit_ref ]; then
 	exit 1
 fi
 
-darwin_file=dist/two-factor-authenticator-darwin-10.6-amd64
-linux_file=dist/two-factor-authenticator-linux-amd64
-
-sha1sum \
-	"$darwin_file" \
-	"$linux_file" \
-	> dist/sha1-checksums
-
 github_user=endorama
 github_repo=two-factor-authenticator
 
+echo "Creating release $version"
 gothub release --user "$github_user" --repo "$github_repo" \
 			   --tag "$version" \
 			   --name "$version" \
 			   --pre-release
 
-gothub upload --user "$github_user" --repo "$github_repo" \
-			  --tag "$version" \
-			  --name "two-factor-authenticator-$version-darwin-10.6-amd64" \
-			  --file "$darwin_file"
-
-gothub upload --user "$github_user" --repo "$github_repo" \
-			  --tag "$version" \
-			  --name "two-factor-authenticator-$version-linux-amd64" \
-			  --file "$linux_file"
-
-gothub upload --user "$github_user" --repo "$github_repo" \
-			  --tag "$version" \
-			  --name "two-factor-authenticator-$version-sha1-checksums" \
-			  --file dist/sha1-checksums
+for file in dist/*; do
+	echo "Adding $file"
+	gothub upload --user "$github_user" --repo "$github_repo" \
+				  --tag "$version" \
+				  --file "$file"
+done
