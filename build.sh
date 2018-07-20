@@ -16,7 +16,7 @@ if [ ! $last_tag_ref == $last_commit_ref ]; then
 	exit 1
 fi
 
-mv dist/ dist.prev/
+[ -d dist/ ] && mv dist/ dist.prev/
 
 xgo \
     --targets="darwin/amd64,linux/amd64" \
@@ -24,6 +24,8 @@ xgo \
     --ldflags "-X main.version=$version" \
     -v -x \
     github.com/endorama/two-factor-authenticator
+
+sudo chown $USER: -R dist
 
 gpg_sign_key="edoardo.tenani@protonmail.com"
 checksum_file="dist/two-factor-authenticator_${version}_checksums.txt"
