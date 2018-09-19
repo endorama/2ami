@@ -18,9 +18,9 @@ A full list of of the available backends can be found [here](https://github.com/
 
 *Security considerations:* the secrets are still beign loaded in memory when
 adding a new key and generating a new token, even if for a small amount of time.
-I believe this is the safest approach, please correct me if I'm wrong. :)
+I believe this is a safe enough approach ( as in for general use case ), please correct me if I'm wrong. :)
 
-**Note:** This software is in beta and has not been security reviewed (yet).
+**Note:** This software has **not** been security reviewed.
 
 ## Usage
 
