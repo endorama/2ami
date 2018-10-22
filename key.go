@@ -20,12 +20,12 @@ const (
 )
 
 type Key struct {
-	Name     string       `json:"name"`
-	Type     KeyType      `json:"type,int8"`
-	Digits   int          `json:"digits,int"`
-	Interval int          `json:"interval,int"`
-	Counter  int          `json:"counter,int"`
-	secret   SecretString `json:"-"`
+	Name     string  `json:"name,string"`
+	Type     KeyType `json:"type,int8"`
+	Digits   int     `json:"digits,int"`
+	Interval int     `json:"interval,int"`
+	Counter  int     `json:"counter,int"`
+	secret   SecretString
 }
 
 func NewKey(name string) Key {
@@ -42,12 +42,14 @@ func NewKey(name string) Key {
 func KeyFromStorage(storage Storage, name string) Key {
 	value, err := storage.GetKey(name)
 	if err != nil {
-		fmt.Errorf("%s", err)
+		// TODO: properly return errors
+		_ = fmt.Errorf("%s", err)
 	}
 	key := Key{}
 	err = json.Unmarshal([]byte(value), &key)
 	if err != nil {
-		fmt.Errorf("%s", err)
+		// TODO: properly return errors
+		_ = fmt.Errorf("%s", err)
 	}
 	key.secret = newSecretString(name)
 	return key
