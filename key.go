@@ -15,7 +15,7 @@ import (
 type KeyType int8
 
 const (
-	// HOTP_TOKEN KeyType = 0
+	HOTP_TOKEN KeyType = 0
 	TOTP_TOKEN KeyType = 1
 )
 
@@ -65,11 +65,10 @@ func (k *Key) GenerateToken() string {
 	switch k.Type {
 	case TOTP_TOKEN:
 		return k.totpToken()
-	// case HOTP_TOKEN:
-	// 	return k.hotpToken()
+	case HOTP_TOKEN:
+		return k.hotpToken()
 	default:
-		panic("Unknown key type. Valid type: TOTP")
-		// panic("Unknown key type. Valid type: TOTP or HOTP")
+		panic("Unknown key type. Valid type: TOTP or HOTP")
 	}
 }
 
@@ -93,22 +92,22 @@ func (k *Key) totpToken() string {
 	return token
 }
 
-// // Generate a new HOTP token and increament counter
-// func (k *Key) hotpToken() int {
-// 	currentCounter := k.Counter
-
-// 	secret, err := k.secret.Value()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	byteKey, err := base32StringToByte(string(secret))
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	token := totp.Generate(byteKey, k.Digits, currentCounter)
-// 	k.Counter++
-// 	return token
-// }
+// Generate a new HOTP token and increament counter
+func (k *Key) hotpToken() string {
+	secret, err := k.secret.Value()
+	if err != nil {
+		log.Fatal(err)
+	}
+	hotp := &otp.HOTP{
+		Secret:         string(secret),
+		Counter:        uint64(k.Counter),
+		Length:         uint8(k.Digits),
+		IsBase32Secret: true,
+	}
+	token := hotp.Get()
+	k.Counter++
+	return token
+}
 
 func (k *Key) Secret(secret string) error {
 	return k.secret.Set([]byte(secret))
