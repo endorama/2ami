@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/endorama/two-factor-authenticator/hotp"
+	otp "github.com/hgfischer/go-otp"
 )
 
 // func TestUnmarshalJSON(t *testing.T) {
@@ -30,42 +30,48 @@ import (
 // 	}
 // }
 
-func _generateTotp(secret string, digits int) int {
-	byteSecret, _ := base32StringToByte(secret)
-
+func _generateTotp(secret string, digits int) string {
 	now := time.Now()
 	interval := 30
 	timeInterval := uint64(time.Duration(interval) * time.Second)
 	counter := uint64(now.UnixNano()) / timeInterval
 
-	return hotp.Generate(byteSecret, digits, counter)
+	token := &otp.HOTP{
+		Secret:         string(secret),
+		Length:         uint8(digits),
+		Counter:        counter,
+		IsBase32Secret: true,
+	}
+	return token.Get()
 }
 
 func TestKeyGenerateTotp(t *testing.T) {
+	var generatedToken string
+
 	key := NewKey("test")
 	secretValue := "ORSXG5A="
 	key.Secret(secretValue)
 	token := _generateTotp(secretValue, key.Digits)
-	generatedToken := key.GenerateToken()
+	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
 	if generatedToken != token {
-		t.Errorf("Wrong token. Expected %d Actual %d", token, generatedToken)
+		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
 
 	key = NewKey("anothertest")
 	secretValue = "MFXG65DIMVZHIZLTOQFA===="
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
-	generatedToken = key.GenerateToken()
+	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
 	if generatedToken != token {
-		t.Errorf("Wrong token. Expected %d Actual %d", token, generatedToken)
+		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
 
 	key = NewKey("thisisatest2")
 	secretValue = "ORUGS43JON2GK43UGI======"
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
-	generatedToken = key.GenerateToken()
+	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
 	if generatedToken != token {
-		t.Errorf("Wrong token. Expected %d Actual %d", token, generatedToken)
+		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
 }
