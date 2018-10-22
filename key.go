@@ -90,22 +90,22 @@ func (k *Key) totpToken() int {
 	return totp.Generate(byteKey, k.Digits, k.Interval)
 }
 
-// Generate a new HOTP token and increament counter
-func (k *Key) hotpToken() int {
-	currentCounter := k.Counter
+// // Generate a new HOTP token and increament counter
+// func (k *Key) hotpToken() int {
+// 	currentCounter := k.Counter
 
-	secret, err := k.secret.Value()
-	if err != nil {
-		log.Fatal(err)
-	}
-	byteKey, err := base32StringToByte(string(secret))
-	if err != nil {
-		log.Fatal(err)
-	}
-	token := totp.Generate(byteKey, k.Digits, currentCounter)
-	k.Counter++
-	return token
-}
+// 	secret, err := k.secret.Value()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	byteKey, err := base32StringToByte(string(secret))
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	token := totp.Generate(byteKey, k.Digits, currentCounter)
+// 	k.Counter++
+// 	return token
+// }
 
 func (k *Key) Secret(secret string) error {
 	return k.secret.Set([]byte(secret))
