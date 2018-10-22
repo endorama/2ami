@@ -49,6 +49,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	var generatedToken string
 
 	key := NewKey("test")
+	// #nosec: G101
 	secretValue := "ORSXG5A="
 	key.Secret(secretValue)
 	token := _generateTotp(secretValue, key.Digits)
@@ -58,6 +59,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	}
 
 	key = NewKey("anothertest")
+	// #nosec: G101
 	secretValue = "MFXG65DIMVZHIZLTOQFA===="
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
@@ -67,6 +69,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	}
 
 	key = NewKey("thisisatest2")
+	// #nosec: G101
 	secretValue = "ORUGS43JON2GK43UGI======"
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
