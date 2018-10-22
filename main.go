@@ -202,7 +202,7 @@ func generate(storage Storage, name string) struct {
 		Value     string
 		ExpiresIn int
 	}{
-		Value:     tokenFormatter("google-authenticator", key.Digits, key.GenerateToken()),
+		Value:     key.GenerateToken(),
 		ExpiresIn: key.ExpiresIn(),
 	}
 }
