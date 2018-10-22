@@ -9,7 +9,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/endorama/two-factor-authenticator/totp"
+	otp "github.com/hgfischer/go-otp"
 )
 
 type KeyType int8
@@ -61,7 +61,7 @@ func (k Key) VerboseString() string {
 	return fmt.Sprintf("%s \t %d digits every %d seconds", k.Name, k.Digits, k.Interval)
 }
 
-func (k *Key) GenerateToken() int {
+func (k *Key) GenerateToken() string {
 	switch k.Type {
 	case TOTP_TOKEN:
 		return k.totpToken()
@@ -78,16 +78,19 @@ func (k *Key) ExpiresIn() int {
 	return k.Interval - (currentTime.Second() % k.Interval)
 }
 
-func (k *Key) totpToken() int {
+func (k *Key) totpToken() string {
 	secret, err := k.secret.Value()
 	if err != nil {
 		log.Fatal(err)
 	}
-	byteKey, err := base32StringToByte(string(secret))
-	if err != nil {
-		log.Fatal(err)
+	totp := &otp.TOTP{
+		Secret:         string(secret),
+		Length:         uint8(k.Digits),
+		Period:         uint8(k.Interval),
+		IsBase32Secret: true,
 	}
-	return totp.Generate(byteKey, k.Digits, k.Interval)
+	token := totp.Get()
+	return token
 }
 
 // // Generate a new HOTP token and increament counter

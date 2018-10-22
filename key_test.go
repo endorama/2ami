@@ -52,7 +52,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	secretValue := "ORSXG5A="
 	key.Secret(secretValue)
 	token := _generateTotp(secretValue, key.Digits)
-	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
+	generatedToken = key.GenerateToken()
 	if generatedToken != token {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
@@ -61,7 +61,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	secretValue = "MFXG65DIMVZHIZLTOQFA===="
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
-	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
+	generatedToken = key.GenerateToken()
 	if generatedToken != token {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
@@ -70,7 +70,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 	secretValue = "ORUGS43JON2GK43UGI======"
 	key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
-	generatedToken = tokenFormatter("google-authenticator", key.Digits, key.GenerateToken())
+	generatedToken = key.GenerateToken()
 	if generatedToken != token {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
