@@ -20,7 +20,7 @@ const (
 )
 
 type Key struct {
-	Name     string       `json:"name,string"`
+	Name     string       `json:"name"`
 	Type     KeyType      `json:"type,int8"`
 	Digits   int          `json:"digits,int"`
 	Interval int          `json:"interval,int"`
