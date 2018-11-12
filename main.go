@@ -163,6 +163,8 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 		return err
 	}
 	secret = strings.TrimSuffix(secret, "\n")
+	// Base32 is always uppercase
+	secret = strings.ToUpper(secret)
 
 	key := NewKey(name)
 	if digits != nil {
