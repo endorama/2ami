@@ -31,6 +31,7 @@ func usage() string {
 
 Usage:
   two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--verbose]
+  two-factor-authenticator dump [<name>] [--verbose]
   two-factor-authenticator generate <name> [-c|--clip] [--verbose]
   two-factor-authenticator list [--verbose]
   two-factor-authenticator remove <name> [--verbose]
@@ -39,6 +40,7 @@ Usage:
 
 Commands:
   add       Add a new key.
+  dump      Dump keys informations (without secrets).
   generate  Generate a token from a known key.
   list      List known keys.
   remove    Remove specified key.
@@ -100,6 +102,20 @@ func main() {
 		if err != nil {
 			ui.Error("An unexpected error occurred. Use DEBUG=true to show logs.")
 			debugPrint(fmt.Sprintf("%s", err))
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+	if arguments["dump"].(bool) {
+		if arguments["<name>"] == nil {
+			errors := dumpAllKeys(storage)
+			printErrorsAndExit(errors) // this can exit(1)
+			os.Exit(0)
+		}
+		name := arguments["<name>"].(string)
+		err := dumpKey(storage, name)
+		if err != nil {
+			ui.Error(err.Error())
 			os.Exit(1)
 		}
 		os.Exit(0)
