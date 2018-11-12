@@ -30,10 +30,10 @@ func usage() string {
 	return `Two factor authenticator agent.
 
 Usage:
-  two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--db=<db-path>] [--verbose]
-  two-factor-authenticator generate <name> [-c|--clip] [--db=<db-path>] [--verbose]
-  two-factor-authenticator list [--db=<db-path>] [--verbose]
-  two-factor-authenticator remove <name> [--db=<db-path>] [--verbose]
+  two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--verbose]
+  two-factor-authenticator generate <name> [-c|--clip] [--verbose]
+  two-factor-authenticator list [--verbose]
+  two-factor-authenticator remove <name> [--verbose]
   two-factor-authenticator -h | --help
   two-factor-authenticator --version
 
@@ -74,7 +74,7 @@ func main() {
 	arguments, _ := docopt.ParseDoc(usage)
 	debugPrint(fmt.Sprint(arguments))
 
-	databaseLocation, databaseFilename := getDatabaseConfigurations(arguments["--db"])
+	databaseLocation, databaseFilename := getDatabaseConfigurations()
 
 	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
@@ -299,10 +299,10 @@ func getDatabaseConfigurations(dbArgument interface{}) (databaseLocation, databa
 		databaseFilename = "2fa.db"
 	}
 
-	if dbArgument != nil {
-		db := dbArgument.(string)
-		databaseLocation = filepath.Dir(db)
-		databaseFilename = filepath.Base(db)
+	dbPath, dbPathEnvPresent := os.LookupEnv("2FA_DB_PATH")
+	if dbPathEnvPresent {
+		databaseLocation = filepath.Dir(dbPath)
+		databaseFilename = filepath.Base(dbPath)
 	}
 
 	return databaseLocation, databaseFilename
