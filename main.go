@@ -280,16 +280,23 @@ func remove(ui cli.Ui, storage Storage, name string) error {
 	return nil
 }
 
-func getDatabaseConfigurations(dbArgument interface{}) (databaseLocation, databaseFilename string) {
+func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
+	// first load fron env variable
+	dbPath, dbPathEnvPresent := os.LookupEnv("2FA_DB_PATH")
+	if dbPathEnvPresent {
+		databaseLocation = filepath.Dir(dbPath)
+		databaseFilename = filepath.Base(dbPath)
+
+		return databaseLocation, databaseFilename
+	}
+
 	userHome, err := getUserHomeFolder()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	databaseLocation = userHome
-	databaseFilename = ".2fa.db"
-
-	// getting XDG_CONFIG_HOME would be good
+	// then try XDG_CONFIG_HOME
+	// TODO: use XDG_CONFIG_HOME
 	switch runtime.GOOS {
 	case "linux":
 		databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
@@ -299,11 +306,9 @@ func getDatabaseConfigurations(dbArgument interface{}) (databaseLocation, databa
 		databaseFilename = "2fa.db"
 	}
 
-	dbPath, dbPathEnvPresent := os.LookupEnv("2FA_DB_PATH")
-	if dbPathEnvPresent {
-		databaseLocation = filepath.Dir(dbPath)
-		databaseFilename = filepath.Base(dbPath)
-	}
+	// else use $HOME
+	databaseLocation = userHome
+	databaseFilename = ".2fa.db"
 
 	return databaseLocation, databaseFilename
 }
