@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/base32"
 	"log"
+	"os"
 	"os/user"
 	"strconv"
 	"strings"
@@ -36,5 +37,14 @@ func base32StringToByte(data string) ([]byte, error) {
 func debugPrint(v string) {
 	if debug {
 		log.Println(v)
+	}
+}
+
+func printErrorsAndExit(errors []error) {
+	if errors != nil {
+		for _, element := range errors {
+			ui.Error(element.Error())
+		}
+		os.Exit(1)
 	}
 }

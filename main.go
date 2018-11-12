@@ -125,12 +125,7 @@ func main() {
 	}
 	if arguments["list"].(bool) {
 		errors := list(&ui, storage)
-		if errors != nil {
-			for _, element := range errors {
-				ui.Error(element.Error())
-			}
-			os.Exit(1)
-		}
+		printErrorsAndExit(errors) // this can exit(1)
 		os.Exit(0)
 	}
 	if arguments["remove"].(bool) {
