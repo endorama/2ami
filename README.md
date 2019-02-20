@@ -3,24 +3,24 @@
 Two factor authenticator agent that stores 2FA secrets in system keyring, thus
 avoiding having them in cleartext (and accessible) somewhere on your computer.
 
-**NB: Current version is RC state**
-
 ## Keyring/Keychain encryption
 
 OTP Secret keys are directly saved and retrieved from system keyring, and are not
 being kept in process active memory.
 
-Supported secret storage backends are:
+Enabled secret storage backends are:
 - macOS/OSX Keychain
 - Secret Service ( Gnome )
 
-A full list of of the available backends can be found [here](https://github.com/99designs/keyring).
+but more are available.
 
-*Security considerations:* the secrets are still beign loaded in memory when
-adding a new key and generating a new token, even if for a small amount of time.
-I believe this is a safe enough approach ( as in for general use case ), please correct me if I'm wrong. :)
+A full list of of the available backends can be found [here](https://github.com/99designs/keyring). If you are interested and able to test with the specified backend, just open a issue and I'll be happy to have a look.
 
-**Note:** This software has **not** been security reviewed.
+*Security considerations:* the secrets are still being loaded in memory when adding a new key and generating a new token, even if for a small amount of time.
+I believe this is a safe enough approach ( as in for general use case ), and is surely better than plain secrets on file system. 
+Please correct me if I'm wrong. :)
+
+**Note:** This software has **not** been security reviewed by a third party.
 
 ## Usage
 
