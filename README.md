@@ -60,5 +60,4 @@ place of missing digits.
 
 ## Known issues
 
-- as per [99designs/keyring#22](https://github.com/99designs/keyring/pull/22)
-  currently the `KDE Wallet` backend cannot be enabled
+None.
