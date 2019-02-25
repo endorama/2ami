@@ -4,10 +4,11 @@ go:
 
 os:
   - linux
-  - osx
+  # - osx
 
 before_install:
+  - sudo apt-get install -y gnome-keyring libsecret-common
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
-install:
+before_script:
   - dep ensure
