@@ -22,6 +22,12 @@ Please correct me if I'm wrong. :)
 
 **Note:** This software has **not** been security reviewed by a third party.
 
+## Installation
+
+Go to the [Release tab](https://github.com/endorama/two-factor-authenticator/releases) and grab your executable. Download it and add execution permissions.
+
+You can watch for new releases through GitHub by watching the repository!
+
 ## Usage
 
 ```
