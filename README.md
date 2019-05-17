@@ -1,26 +1,26 @@
-# two-factor-authenticator agent
+![go report](https://goreportcard.com/badge/github.com/endorama/two-factor-authenticator)
 
-Two factor authenticator agent that stores 2FA secrets in system keyring, thus
-avoiding having them in cleartext (and accessible) somewhere on your computer.
+![Logo](images/logo.svg)
+
+Two Factor Authenticator that stores 2FA secrets in system keyring,
+avoiding storing them in cleartext on your computer.
+
+OTP Secret keys are saved and retrieved from system keyring at each use, so are not
+being kept in process active memory if not during operation explicitly requiring them.
+
+**Security considerations:** the secrets are still being loaded in memory when adding a new key and generating a new token, even if for a small amount of time.
+I believe this is a safe enough approach ( as in for general use case ), and is surely better than plain secrets on file system. 
+Please correct me if I'm wrong. :)
+
+**Note:** This software has **not** been security reviewed by a third party.
 
 ## Keyring/Keychain encryption
-
-OTP Secret keys are directly saved and retrieved from system keyring, and are not
-being kept in process active memory.
 
 Enabled secret storage backends are:
 - macOS/OSX Keychain
 - Secret Service ( Gnome )
 
-but more are available.
-
-A full list of of the available backends can be found [here](https://github.com/99designs/keyring). If you are interested and able to test with the specified backend, just open a issue and I'll be happy to have a look.
-
-*Security considerations:* the secrets are still being loaded in memory when adding a new key and generating a new token, even if for a small amount of time.
-I believe this is a safe enough approach ( as in for general use case ), and is surely better than plain secrets on file system. 
-Please correct me if I'm wrong. :)
-
-**Note:** This software has **not** been security reviewed by a third party.
+More storage are available, a full list can be found [here](https://github.com/99designs/keyring). If you are interested and able to test with the specified backend, just open a issue to have it added.
 
 ## Installation
 
