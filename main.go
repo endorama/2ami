@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/base32"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -177,6 +178,11 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 	// Base32 is always uppercase
 	secret = strings.ToUpper(secret)
 
+	if err = isValidBase32(secret); err != nil {
+		ui.Error(fmt.Sprintf("secret is not valid: %s", err))
+		os.Exit(2)
+	}
+
 	key := NewKey(name)
 	if digits != nil {
 		key.Digits = convertStringToInt(digits.(string))
@@ -322,4 +328,13 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 	databaseFilename = ".2fa.db"
 
 	return databaseLocation, databaseFilename
+}
+
+func isValidBase32(data string) error {
+	encoder := base32.Encoding{}
+	_, err := encoder.DecodeString(data)
+	if err != nil {
+		return err
+	}
+	return nil
 }

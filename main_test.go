@@ -6,3 +6,15 @@ package main
 import "testing"
 
 func Test(t *testing.T) {}
+
+func TestIsValidBase32_whitValidData(t *testing.T) {
+	if isValidBase32("ORSXG5A=") != nil {
+		t.Error("Not a valid Base32 string")
+	}
+}
+
+func TestIsValidBase32_whitInvalidData(t *testing.T) {
+	if isValidBase32("*^ASD") == nil {
+		t.Error("base32 validator missed this invalid base32 string")
+	}
+}
