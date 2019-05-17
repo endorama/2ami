@@ -13,7 +13,6 @@ echo $version $last_tag_ref $last_commit_ref
 if [ ! $last_tag_ref == $last_commit_ref ]; then
 	echo "last commit is not last tag"
 	echo "last tag: $version"
-	exit 1
 fi
 
 [ -d dist/ ] && mv dist/ dist.prev/
