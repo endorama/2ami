@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# script/setup: Set up application for the first time after cloning, or set it
+#               back to the initial first unused state.
+
+set -e
+
+hasCommand() {
+  local commandName=$1
+  command -v $commandName 2>&1 >/dev/null
+  return $?
+}
+
+
+cd "$(dirname "$0")/.."
+
+hasCommand "asdf" || {
+  echo "required command: asdf";
+  echo "install it first https://github.com/asdf-vm/asdf";
+  exit 1;
+}
+hasCommand "docker" || {
+  echo "required command: docker";
+  echo "install it first https://www.docker.com/";
+  exit 1;
+}
+hasCommand "xgo" || {
+  echo "required command: xgo";
+  echo "install it first https://github.com/karalabe/xgo";
+  exit 1;
+}
+
+script/bootstrap
+
+echo "==> App is now ready to go!"
