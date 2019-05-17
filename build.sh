@@ -18,6 +18,9 @@ fi
 
 [ -d dist/ ] && mv dist/ dist.prev/
 
+# force using go modules when inside GOPATH
+export GO111MODULE=on
+
 xgo \
     --targets="darwin/amd64,linux/amd64" \
     --dest=dist \
