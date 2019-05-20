@@ -174,9 +174,7 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 	if err != nil {
 		return err
 	}
-	secret = strings.TrimSuffix(secret, "\n")
-	// Base32 is always uppercase
-	secret = strings.ToUpper(secret)
+	secret = sanitizeSecret(secret)
 
 	if err = isValidBase32(secret); err != nil {
 		ui.Error(fmt.Sprintf("secret is not valid: %s", err))
@@ -328,6 +326,16 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 	databaseFilename = ".2fa.db"
 
 	return databaseLocation, databaseFilename
+}
+
+func sanitizeSecret(data string) string {
+	// any newline is not necessary
+	data = strings.TrimSuffix(data, "\n")
+	// Base32 is always uppercase
+	data = strings.ToUpper(data)
+	// remove all spaces in the string
+	data = strings.Replace(data, " ", "", -1)
+	return data
 }
 
 func isValidBase32(data string) error {
