@@ -117,6 +117,15 @@ func (k *Key) Delete() error {
 	return k.secret.Remove()
 }
 
+func (k *Key) Rename(newName string) error {
+	err := k.secret.Rename(newName)
+	if err != nil {
+		return err
+	}
+	k.Name = newName
+	return nil
+}
+
 // func (this Key) MarshalJSON() ([]byte, error) {
 // 	m := map[string]interface{}{} // ideally use make with the right capacity
 // 	m["digits"] = this.Digits

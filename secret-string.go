@@ -62,3 +62,17 @@ func (s *SecretString) Value() ([]byte, error) {
 func (s *SecretString) Remove() error {
 	return s.ring.Remove(s.Name)
 }
+
+func (s *SecretString) Rename(name string) error {
+	data, err := s.Value()
+	if err != nil {
+		return err
+	}
+	s.Remove()
+	s.Name = name
+	err = s.Set(data)
+	if err != nil {
+		return err
+	}
+	return nil
+}

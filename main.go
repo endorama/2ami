@@ -36,6 +36,7 @@ Usage:
   two-factor-authenticator generate <name> [-c|--clip] [--verbose]
   two-factor-authenticator list [--verbose]
   two-factor-authenticator remove <name> [--verbose]
+  two-factor-authenticator rename <old-name> <new-name>
   two-factor-authenticator -h | --help
   two-factor-authenticator --version
 
@@ -152,6 +153,21 @@ func main() {
 			ui.Error(err.Error())
 			os.Exit(1)
 		}
+		os.Exit(0)
+	}
+	if arguments["rename"].(bool) {
+		oldName := arguments["<old-name>"].(string)
+		newName := arguments["<new-name>"].(string)
+		if oldName == newName {
+			ui.Error("old-name and new-name are equal, aborting")
+			os.Exit(1)
+		}
+		err := rename(&ui, storage, oldName, newName)
+		if err != nil {
+			ui.Error(err.Error())
+			os.Exit(1)
+		}
+		ui.Info("Key renamed")
 		os.Exit(0)
 	}
 	if arguments["--version"].(bool) {
@@ -292,6 +308,24 @@ func remove(ui cli.Ui, storage Storage, name string) error {
 		return err
 	}
 	ui.Info("Key removed")
+	return nil
+}
+
+func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
+	key := KeyFromStorage(storage, oldName)
+	key.Rename(newName)
+	marshal, _ := json.Marshal(key)
+	debugPrint(fmt.Sprintf("%s", marshal))
+
+	result, err := storage.AddKey(key.Name, []byte(marshal))
+	if err != nil {
+		return err
+	}
+	storage.RemoveKey(oldName)
+	if !result {
+		ui.Error("something went wrong adding key")
+		os.Exit(1)
+	}
 	return nil
 }
 
