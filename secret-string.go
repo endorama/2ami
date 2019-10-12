@@ -21,6 +21,7 @@ func newSecretString(name string) SecretString {
 		AllowedBackends: []keyring.BackendType{
 			keyring.SecretServiceBackend,
 			keyring.KeychainBackend,
+			keyring.WinCredBackend,
 		},
 		ServiceName:             "two-factor-authenticator",
 		LibSecretCollectionName: "login",
