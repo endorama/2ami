@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Disable EOL conversions
         run: git config --global core.autocrlf false
+      - name: install ubuntu deps
+        run: sudo apt-get install libsecret-1-dev dbus gnome-keyring python-keyring python-gnomekeyring
+        if: matrix.operating-system == 'ubuntu-18.04'
 
       - name: Checkout
         uses: actions/checkout@master
@@ -35,6 +38,10 @@ jobs:
         # run: task build
         run: go build
 
+      - name: Run unit tests
+        # run: task test-unit
+        run: dbus-launch bash -c 'go test -v'
+        if: matrix.operating-system == 'ubuntu-18.04'
       - name: Run unit tests
         # run: task test-unit
         run: go test -v
