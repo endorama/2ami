@@ -30,8 +30,8 @@ github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874 h1:em+tTnz
 github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874/go.mod h1:JMRHfdO9jKNzS/+BTlxCjKNQHg/jZAft8U7LloJvN7I=
 github.com/hgfischer/go-otp v1.0.0 h1:WGxLfYXh5djjFQUxrMDvaMvIUhRDtHqZumJ7sI3zVLM=
 github.com/hgfischer/go-otp v1.0.0/go.mod h1:SFK84Ci40RFGoz2Ukjr/6KO0Ma31GfQAyWjf+SGb028=
-github.com/keybase/go-keychain v0.0.0-20180306221504-70b98e9c8d75 h1:SrHIDCfMNRv7kruOU0Cki9eDxjy01zo6xthICM27I/Q=
-github.com/keybase/go-keychain v0.0.0-20180306221504-70b98e9c8d75/go.mod h1:JJNrCn9otv/2QP4D7SMJBgaleKpOf66PnW6F5WGNRIc=
+github.com/keybase/go-keychain v0.0.0-20190828153431-2390ae572545 h1:9w9Fw+XzuDIZFMW5zxNehR97pMWu+1CpcEYK71PyAGg=
+github.com/keybase/go-keychain v0.0.0-20190828153431-2390ae572545/go.mod h1:JJNrCn9otv/2QP4D7SMJBgaleKpOf66PnW6F5WGNRIc=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=

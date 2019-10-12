@@ -16,7 +16,7 @@ require (
 	github.com/hashicorp/errwrap v0.0.0-20141028054710-7554cd9344ce // indirect
 	github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874 // indirect
 	github.com/hgfischer/go-otp v1.0.0
-	github.com/keybase/go-keychain v0.0.0-20180306221504-70b98e9c8d75 // indirect
+	github.com/keybase/go-keychain v0.0.0-20190828153431-2390ae572545 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.3 // indirect
