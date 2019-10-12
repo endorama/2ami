@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        operating-system: [ubuntu-18.04, windows-2019]
+        operating-system: [ubuntu-18.04, windows-2019, macOS-10.14]
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -23,10 +23,10 @@ jobs:
         with:
           go-version: '1.13'
 
-      - name: Install Go deps
-        run: |
-          go get github.com/golangci/govet
-          go get golang.org/x/lint/golint
+      # - name: Install Go deps
+      #   run: |
+      #     go get github.com/golangci/govet
+      #     go get golang.org/x/lint/golint
 
       # - name: Install Taskfile
       #   uses: Arduino/actions/setup-taskfile@master
@@ -46,9 +46,11 @@ jobs:
         # for a token.
         if: >
           matrix.operating-system != 'windows-2019' &&
+          matrix.operating-system != 'macOS-10.14' &&
           github.event_name == 'push'
         uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage_unit.txt
           flags: unit
+
