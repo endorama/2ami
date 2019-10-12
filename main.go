@@ -313,7 +313,10 @@ func remove(ui cli.Ui, storage Storage, name string) error {
 
 func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 	key := KeyFromStorage(storage, oldName)
-	key.Rename(newName)
+	err := key.Rename(newName)
+	if err != nil {
+		ui.Error(fmt.Sprintf("Error renaming key %s: %s", oldName, err))
+	}
 	marshal, _ := json.Marshal(key)
 	debugPrint(fmt.Sprintf("%s", marshal))
 
