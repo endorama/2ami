@@ -15,7 +15,7 @@ jobs:
       - name: Disable EOL conversions
         run: git config --global core.autocrlf false
       - name: install ubuntu deps
-        run: sudo apt-get install libsecret-1-dev dbus gnome-keyring python-keyring python-gnomekeyring
+        run: sudo apt-get install libsecret-1-dev dbus gnome-keyring python-keyring
         if: matrix.operating-system == 'ubuntu-18.04'
 
       - name: Checkout
@@ -38,11 +38,12 @@ jobs:
         # run: task build
         run: go build
 
-      - name: Run unit tests
+      - name: Run ubuntu unit tests
         # run: task test-unit
+        # Run `graph auth` inside `dbus-launch` to be able to access gnome-keyring
         run: dbus-launch bash -c 'go test -v'
         if: matrix.operating-system == 'ubuntu-18.04'
-      - name: Run unit tests
+      - name: Run other unit tests
         # run: task test-unit
         run: go test -v
 
