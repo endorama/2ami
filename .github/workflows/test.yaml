@@ -16,7 +16,7 @@ jobs:
         run: git config --global core.autocrlf false
       - name: install ubuntu deps
         run: > 
-          sudo apt-get install libsecret-1-dev dbus gnome-keyring python-keyring && 
+          sudo apt-get install libsecret-1-dev dbus dbus-x11 gnome-keyring python-keyring && 
           dbus-launch /usr/bin/python -c "import gnomekeyring;gnomekeyring.create_sync('login', '');"
         if: matrix.operating-system == 'ubuntu-18.04'
 
