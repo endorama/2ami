@@ -21,13 +21,14 @@ jobs:
           sudo apt autoremove
           apt show python-cryptography 
           sudo apt install libsecret-1-dev dbus dbus-x11 gnome-keyring libdbus-glib-1-dev python3-setuptools
-          pip3 install secretstorage keyring #dbus-python
+          sudo pip3 install secretstorage keyring #dbus-python
           export DISPLAY=“:0.0”
           eval "$(dbus-launch --sh-syntax)"
           mkdir -p ~/.cache
           mkdir -p ~/.local/share/keyrings
           eval $(gnome-keyring-daemon --start)
-          echo "asd" | /usr/bin/keyring -p ~/.local/share/keyrings/login.keyring set "test" "username"
+          echo "KEYRING:: $(which keyring)"
+          echo "asd" | $(which keyring) -p ~/.local/share/keyrings/login.keyring set "test" "username"
           #dbus-launch /usr/bin/python -c "import keyring; keyring.get_keyring(); keyring.set('test', 'username', 'password')"
           #dbus-launch /usr/bin/python -c "import gnomekeyring; gnomekeyring.create_sync('login', '');"
         if: matrix.operating-system == 'ubuntu-18.04'
