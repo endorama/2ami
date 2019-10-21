@@ -16,13 +16,15 @@ jobs:
         run: git config --global core.autocrlf false
       - name: install ubuntu deps
         run: |
-          sudo apt install libsecret-1-dev dbus dbus-x11 gnome-keyring python-keyring
+          sudo apt install libsecret-1-dev dbus dbus-x11 gnome-keyring
+          pip install secretstorage dbus-python
+          pip install keyring
           export DISPLAY=“:0.0”
           eval "$(dbus-launch --sh-syntax)"
           mkdir -p ~/.cache
           mkdir -p ~/.local/share/keyrings
           eval $(gnome-keyring-daemon --start)
-          dbus-launch /usr/bin/python -c "import gnomekeyring;gnomekeyring.create_sync('login', '');"
+          #dbus-launch /usr/bin/python -c "import gnomekeyring; gnomekeyring.create_sync('login', '');"
         if: matrix.operating-system == 'ubuntu-18.04'
 
       - name: Checkout
