@@ -24,6 +24,8 @@ jobs:
           mkdir -p ~/.cache
           mkdir -p ~/.local/share/keyrings
           eval $(gnome-keyring-daemon --start)
+          echo "asd" | keyring -p ~/.local/share/keyrings/login.keyring set "test" "username"
+          #dbus-launch /usr/bin/python -c "import keyring; keyring.get_keyring(); keyring.set('test', 'username', 'password')"
           #dbus-launch /usr/bin/python -c "import gnomekeyring; gnomekeyring.create_sync('login', '');"
         if: matrix.operating-system == 'ubuntu-18.04'
 
