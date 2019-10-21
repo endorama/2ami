@@ -16,9 +16,11 @@ jobs:
         run: git config --global core.autocrlf false
       - name: install ubuntu deps
         run: |
+          sudo apt-get remove python-cryptography
+          sudo apt-get remove python3-cryptography
+          apt show python-cryptography 
           sudo apt install libsecret-1-dev dbus dbus-x11 gnome-keyring libdbus-glib-1-dev python3-setuptools
-          pip3 install secretstorage #dbus-python
-          pip3 install keyring
+          pip3 install secretstorage keyring #dbus-python
           export DISPLAY=“:0.0”
           eval "$(dbus-launch --sh-syntax)"
           mkdir -p ~/.cache
