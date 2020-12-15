@@ -76,7 +76,7 @@ func (s *Storage) AddKey(key string, value []byte) (bool, error) {
 
 func (s *Storage) ListKey() ([]string, error) {
 	var keys []string
-	s.db.View(func(tx *bolt.Tx) error {
+	err := s.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(dbBucket))
 		c := b.Cursor()
 
@@ -87,13 +87,16 @@ func (s *Storage) ListKey() ([]string, error) {
 
 		return nil
 	})
+	if err != nil {
+		return []string{}, err
+	}
 
 	return keys, nil
 }
 
 func (s *Storage) GetKey(key string) ([]byte, error) {
 	var value []byte
-	s.db.View(func(tx *bolt.Tx) error {
+	err := s.db.View(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		bucket := tx.Bucket([]byte(dbBucket))
 		if bucket == nil {
@@ -104,6 +107,10 @@ func (s *Storage) GetKey(key string) ([]byte, error) {
 
 		return nil
 	})
+	if err != nil {
+		return []byte{}, err
+	}
+
 	return value, nil
 }
 

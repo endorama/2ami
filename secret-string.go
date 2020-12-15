@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// SecretString represent a named string in a secure storage
 type SecretString struct {
 	Name string
 	ring keyring.Keyring
@@ -35,6 +36,8 @@ func newSecretString(name string) SecretString {
 	}
 }
 
+// Set write value for the current string in the secure storage
+// Can error if writing to secure storage fails
 func (s *SecretString) Set(data []byte) error {
 	item := keyring.Item{
 		Key:         s.Name,
@@ -49,6 +52,8 @@ func (s *SecretString) Set(data []byte) error {
 	return nil
 }
 
+// Value returns value of the current string, if present
+// Can fail if reading from secure storage fails
 func (s *SecretString) Value() ([]byte, error) {
 	i, err := s.ring.Get(s.Name)
 	if err != nil {
@@ -60,16 +65,21 @@ func (s *SecretString) Value() ([]byte, error) {
 	return i.Data, nil
 }
 
+// Remove delete current string from storage
 func (s *SecretString) Remove() error {
 	return s.ring.Remove(s.Name)
 }
 
+// Rename updates current secret string name
 func (s *SecretString) Rename(name string) error {
 	data, err := s.Value()
 	if err != nil {
 		return err
 	}
-	s.Remove()
+	err = s.Remove()
+	if err != nil {
+		return err
+	}
 	s.Name = name
 	err = s.Set(data)
 	if err != nil {
