@@ -9,9 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	docopt "github.com/docopt/docopt.go"
@@ -82,16 +80,20 @@ func main() {
 
 	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
-	os.MkdirAll(databaseLocation, 0755)
+	err := os.MkdirAll(databaseLocation, 0755)
+	if err != nil {
+		ui.Error(fmt.Sprintf("Cannot create database location; %s", err))
+	}
+
 	storage := NewStorage(databaseLocation, databaseFilename)
-	if err := storage.Init(); err != nil {
+	if err = storage.Init(); err != nil {
 		ui.Error(fmt.Sprintf("Cannot initialize database; %s", err))
 		os.Exit(1)
 	}
 
 	verbose = arguments["--verbose"].(bool)
 
-	// deleteAllKeys(storage)
+	// deleteAllKeys(storage) //nolint
 
 	if arguments["add"].(bool) {
 		name := arguments["<name>"].(string)
@@ -131,7 +133,8 @@ func main() {
 		token := generate(storage, name)
 
 		if arguments["--clip"].(bool) {
-			clipboard.WriteAll(token.Value)
+			err = clipboard.WriteAll(token.Value)
+			ui.Error(fmt.Sprintf("Cannot copy to clipboard: %s", err))
 		} else {
 			if verbose {
 				ui.Info(fmt.Sprintf("%s ( %d seconds left )\n", token.Value, token.ExpiresIn))
@@ -324,7 +327,10 @@ func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 	if err != nil {
 		return err
 	}
-	storage.RemoveKey(oldName)
+	err = storage.RemoveKey(oldName)
+	if err != nil {
+		ui.Error(fmt.Sprintf("Removal of old key failed: %s", err))
+	}
 	if !result {
 		ui.Error("something went wrong adding key")
 		os.Exit(1)
@@ -347,20 +353,20 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 		log.Fatal(err)
 	}
 
-	// then try XDG_CONFIG_HOME
-	// TODO: use XDG_CONFIG_HOME
-	switch runtime.GOOS {
-	case "linux":
-		databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
-		databaseFilename = "2fa.db"
-	case "darwin":
-		databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
-		databaseFilename = "2fa.db"
-	}
-
-	// else use $HOME
+	// default to user $HOME
 	databaseLocation = userHome
 	databaseFilename = ".2fa.db"
+
+	// then try XDG_CONFIG_HOME
+	// TODO: use XDG_CONFIG_HOME
+	// switch runtime.GOOS {
+	// case "linux":
+	//   databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+	//   databaseFilename = "2fa.db"
+	// case "darwin":
+	//   databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+	//   databaseFilename = "2fa.db"
+	// }
 
 	return databaseLocation, databaseFilename
 }

@@ -50,7 +50,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 
 	key := NewKey("test")
 	secretValue := "ORSXG5A="
-	key.Secret(secretValue)
+	_ = key.Secret(secretValue)
 	token := _generateTotp(secretValue, key.Digits)
 	generatedToken = key.GenerateToken()
 	if generatedToken != token {
@@ -59,7 +59,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 
 	key = NewKey("anothertest")
 	secretValue = "MFXG65DIMVZHIZLTOQFA===="
-	key.Secret(secretValue)
+	_ = key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
 	generatedToken = key.GenerateToken()
 	if generatedToken != token {
@@ -68,7 +68,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 
 	key = NewKey("thisisatest2")
 	secretValue = "ORUGS43JON2GK43UGI======"
-	key.Secret(secretValue)
+	_ = key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
 	generatedToken = key.GenerateToken()
 	if generatedToken != token {

@@ -30,6 +30,7 @@ func convertStringToInt(value string) (returnValue int) {
 	return returnValue
 }
 
+//nolint
 func base32StringToByte(data string) ([]byte, error) {
 	return base32.StdEncoding.DecodeString(strings.ToUpper(data))
 }
