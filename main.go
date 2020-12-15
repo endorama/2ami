@@ -93,7 +93,7 @@ func main() {
 
 	verbose = arguments["--verbose"].(bool)
 
-	// deleteAllKeys(storage) //nolint
+	// deleteAllKeys(storage) //nolint:unused
 
 	if arguments["add"].(bool) {
 		name := arguments["<name>"].(string)
@@ -275,6 +275,7 @@ func list(ui cli.Ui, storage Storage) (errors []error) {
 	return nil
 }
 
+//nolint:unused
 func deleteAllKeys(storage Storage) {
 	keys, err := storage.ListKey()
 	if err != nil {
