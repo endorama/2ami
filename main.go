@@ -200,7 +200,11 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 		os.Exit(2)
 	}
 
-	key := NewKey(name)
+	ring, err := openKeyring()
+	if err != nil {
+		return err
+	}
+	key := NewKey(ring, name)
 	if digits != nil {
 		key.Digits = convertStringToInt(digits.(string))
 	}
@@ -233,7 +237,11 @@ func generate(storage Storage, name string) struct {
 	Value     string
 	ExpiresIn int
 } {
-	key := KeyFromStorage(storage, name)
+	ring, err := openKeyring()
+	if err != nil {
+		log.Fatal(err)
+	}
+	key := KeyFromStorage(storage, ring, name)
 	return struct {
 		Value     string
 		ExpiresIn int
@@ -297,9 +305,13 @@ func deleteAllKeys(storage Storage) {
 }
 
 func remove(ui cli.Ui, storage Storage, name string) error {
-	key := KeyFromStorage(storage, name)
+	ring, err := openKeyring()
+	if err != nil {
+		return err
+	}
+	key := KeyFromStorage(storage, ring, name)
 
-	err := key.Delete()
+	err = key.Delete()
 	if err != nil {
 		if strings.HasPrefix(err.Error(), "Item not found") {
 			ui.Info("Key is not present in keyring, skipping deletion")
@@ -316,8 +328,12 @@ func remove(ui cli.Ui, storage Storage, name string) error {
 }
 
 func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
-	key := KeyFromStorage(storage, oldName)
-	err := key.Rename(newName)
+	ring, err := openKeyring()
+	if err != nil {
+		return err
+	}
+	key := KeyFromStorage(storage, ring, oldName)
+	err = key.Rename(newName)
 	if err != nil {
 		ui.Error(fmt.Sprintf("Error renaming key %s: %s", oldName, err))
 	}
