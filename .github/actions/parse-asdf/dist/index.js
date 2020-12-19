@@ -103,7 +103,16 @@ const asdf_1 = __webpack_require__(430);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const tools = yield asdf_1.parseToolVersions(path_1.default.join(process.cwd(), '.tool-versions'));
+            const file = path_1.default.join(process.cwd(), '.tool-versions');
+            core.debug(file);
+            const tools = yield asdf_1.parseToolVersions(file);
+            core.warning('All found versions are exported to env variables');
+            core.startGroup('.tool-versions');
+            for (const [key, value] of tools) {
+                core.info(`Gathered '${key}' version ${value}`);
+                core.exportVariable(`${key.toUpperCase()}_VERSION`, value);
+            }
+            core.endGroup();
             core.setOutput('tools', JSON.stringify(tools));
         }
         catch (error) {
