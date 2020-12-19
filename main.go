@@ -275,7 +275,7 @@ func list(ui cli.Ui, storage Storage) (errors []error) {
 	return nil
 }
 
-//nolint:unused
+//nolint
 func deleteAllKeys(storage Storage) {
 	keys, err := storage.ListKey()
 	if err != nil {

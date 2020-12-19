@@ -21,10 +21,10 @@ const (
 
 type Key struct {
 	Name     string       `json:"name"`
-	Type     KeyType      `json:"type,int8"`
-	Digits   int          `json:"digits,int"`
-	Interval int          `json:"interval,int"`
-	Counter  int          `json:"counter,int"`
+	Type     KeyType      `json:"type,int8"` //nolint
+	Digits   int          `json:"digits,int"` //nolint
+	Interval int          `json:"interval,int"` //nolint
+	Counter  int          `json:"counter,int"` //nolint
 	secret   SecretString 
 }
 
