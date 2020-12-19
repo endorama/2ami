@@ -9,6 +9,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/99designs/keyring"
 	otp "github.com/hgfischer/go-otp"
 )
 
@@ -28,18 +29,18 @@ type Key struct {
 	secret   SecretString 
 }
 
-func NewKey(name string) Key {
+func NewKey(ring keyring.Keyring, name string) Key {
 	return Key{
 		Name:     name,
 		Type:     TOTP_TOKEN,
 		Digits:   6,
 		Interval: 30,
 		Counter:  1,
-		secret:   newSecretString(name),
+		secret:   newSecretString(name, ring),
 	}
 }
 
-func KeyFromStorage(storage Storage, name string) Key {
+func KeyFromStorage(storage Storage, ring keyring.Keyring, name string) Key {
 	value, err := storage.GetKey(name)
 	if err != nil {
 		fmt.Println(fmt.Errorf("%s", err))
@@ -49,7 +50,7 @@ func KeyFromStorage(storage Storage, name string) Key {
 	if err != nil {
 		fmt.Println(fmt.Errorf("%s", err))
 	}
-	key.secret = newSecretString(name)
+	key.secret = newSecretString(name, ring)
 	return key
 }
 

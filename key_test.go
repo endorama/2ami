@@ -48,7 +48,9 @@ func _generateTotp(secret string, digits int) string {
 func TestKeyGenerateTotp(t *testing.T) {
 	var generatedToken string
 
-	key := NewKey("test")
+	ring, _ := openKeyring()
+
+	key := NewKey(ring, "test")
 	secretValue := "ORSXG5A="
 	_ = key.Secret(secretValue)
 	token := _generateTotp(secretValue, key.Digits)
@@ -57,7 +59,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
 
-	key = NewKey("anothertest")
+	key = NewKey(ring, "anothertest")
 	secretValue = "MFXG65DIMVZHIZLTOQFA===="
 	_ = key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)
@@ -66,7 +68,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
 	}
 
-	key = NewKey("thisisatest2")
+	key = NewKey(ring, "thisisatest2")
 	secretValue = "ORUGS43JON2GK43UGI======"
 	_ = key.Secret(secretValue)
 	token = _generateTotp(secretValue, key.Digits)

@@ -5,7 +5,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/99designs/keyring"
 	"github.com/pkg/errors"
@@ -17,19 +16,7 @@ type SecretString struct {
 	ring keyring.Keyring
 }
 
-func newSecretString(name string) SecretString {
-	ring, err := keyring.Open(keyring.Config{
-		AllowedBackends: []keyring.BackendType{
-			keyring.SecretServiceBackend,
-			keyring.KeychainBackend,
-			keyring.WinCredBackend,
-		},
-		ServiceName:             "two-factor-authenticator",
-		LibSecretCollectionName: "login",
-	})
-	if err != nil {
-		log.Fatalf("can't open keyring: %s", err)
-	}
+func newSecretString(name string, ring keyring.Keyring) SecretString {
 	return SecretString{
 		Name: name,
 		ring: ring,
