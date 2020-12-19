@@ -8,9 +8,11 @@ async function run(): Promise<void> {
     core.debug(file)
     const tools = await parseToolVersions(file)
 
+    core.warning('All found versions are exported to env variables')
     core.startGroup('.tool-versions')
     for (const [key, value] of tools) {
       core.info(`Gathered '${key}' version ${value}`)
+      core.exportVariable(`${key.toUpperCase()}_VERSION`, value)
     }
     core.endGroup()
 
