@@ -1,0 +1,47 @@
+---
+name: tests
+
+on: [pull_request]
+
+jobs:
+  go-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Disable EOL conversions
+        run: git config --global core.autocrlf false
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: gather versions
+        uses: ./.github/actions/parse-asdf
+        id: versions
+
+      - name: install Go
+        uses: actions/setup-go@v1
+        with: 
+          go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
+
+      - name: Run tests
+        run: go test -v
+      
+      # - name: Setup tmate session
+      #   if: "${{ failure() }}"
+      #   uses: mxschmitt/action-tmate@v3
+
+      # - name: Send unit tests coverage to Codecov
+      #   # Since secrets aren't available on forks, we only
+      #   # upload coverage on `push`. This might change if
+      #   # Codecov whitelists GitHub, lifting the need
+      #   # for a token.
+      #   if: >
+      #     matrix.operating-system != 'windows-2019' &&
+      #     matrix.operating-system != 'macOS-10.14' &&
+      #     github.event_name == 'push'
+      #   uses: codecov/codecov-action@v1.0.2
+      #   with:
+      #     token: ${{secrets.CODECOV_TOKEN}}
+      #     file: ./coverage_unit.txt
+      #     flags: unit
+      # 
