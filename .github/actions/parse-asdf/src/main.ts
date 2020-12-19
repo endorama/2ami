@@ -4,9 +4,15 @@ import {parseToolVersions} from './asdf'
 
 async function run(): Promise<void> {
   try {
-    const tools = await parseToolVersions(
-      path.join(process.cwd(), '.tool-versions')
-    )
+    const file = path.join(process.cwd(), '.tool-versions')
+    core.debug(file)
+    const tools = await parseToolVersions(file)
+
+    core.startGroup('.tool-versions')
+    for (const [key, value] of tools) {
+      core.info(`Gathered '${key}' version ${value}`)
+    }
+    core.endGroup()
 
     core.setOutput('tools', JSON.stringify(tools))
   } catch (error) {
