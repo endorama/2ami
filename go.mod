@@ -1,5 +1,7 @@
 module github.com/endorama/two-factor-authenticator
 
+go 1.15
+
 require (
 	github.com/99designs/keyring v0.0.0-20180523072454-ccd0779e6f10
 	github.com/armon/go-radix v0.0.0-20170727155443-1fca145dffbc // indirect
