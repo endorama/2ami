@@ -68,29 +68,27 @@ jobs:
       #     file: ./coverage_unit.txt
       #     flags: unit
 
-  build:
-    needs: [lint, tests]
-    strategy:
-      matrix:
-        operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
-    runs-on: ${{ matrix.operating-system }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: gather versions
-        uses: ./.github/actions/parse-asdf
-        id: versions
-
-      - name: install Go
-        uses: actions/setup-go@v1
-        with: 
-          go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
-
-      - name: Build the CLI
-        run: go build --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: "artifact-${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
-          path: ./two-factor-authenticator
+  # disabled as unneeded at the moment
+  # build:
+  #   needs: [lint, tests]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  # 
+  #     - name: gather versions
+  #       uses: ./.github/actions/parse-asdf
+  #       id: versions
+  # 
+  #     - name: install Go
+  #       uses: actions/setup-go@v1
+  #       with: 
+  #         go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
+  # 
+  #     - name: Build the CLI
+  #       run: go build --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
+  # 
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: "artifact-${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
+  #         path: ./two-factor-authenticator
