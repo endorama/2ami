@@ -4,9 +4,12 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"testing"
 	"time"
 
+	"github.com/99designs/keyring"
 	otp "github.com/hgfischer/go-otp"
 )
 
@@ -45,10 +48,35 @@ func _generateTotp(secret string, digits int) string {
 	return token.Get()
 }
 
+// openTestKeyring replaces openKeyring function to use a file backend instead
+// This should allow running tests on all platforms without any OS specific
+// dependency.
+func openTestKeyring() (keyring.Keyring, error){
+	path, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	config := keyring.Config{
+		AllowedBackends: []keyring.BackendType{
+			keyring.FileBackend,
+		},
+		ServiceName:             "two-factor-authenticator",
+		FilePasswordFunc: func(prompt string) (string, error) { 
+			return "password", nil
+		},
+		FileDir: path,
+	}
+	ring, err := keyring.Open(config)
+	if err != nil {
+		return nil, fmt.Errorf("can't open keyring: %w", err)
+	}
+	return ring, nil
+}
+
 func TestKeyGenerateTotp(t *testing.T) {
 	var generatedToken string
 
-	ring, _ := openKeyring()
+	ring, _ := openTestKeyring()
 
 	key := NewKey(ring, "test")
 	secretValue := "ORSXG5A="
