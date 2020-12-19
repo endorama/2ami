@@ -1,35 +1,13 @@
 ---
-name: cross-platform build
+name: run on master
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: gather versions
-        uses: ./.github/actions/parse-asdf
-        id: versions
-
-      - name: install Go
-        uses: actions/setup-go@v1
-        with: 
-          go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
-
-      - name: check format
-        # exit with 0 only if gofmt returns 0 lines
-        run: "exit $(gofmt | wc -l)"
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.33
-
   build:
-    needs: lint
     strategy:
       matrix:
         operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
