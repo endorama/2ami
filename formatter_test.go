@@ -25,14 +25,14 @@ func TestFormatter_googleAuthenticator(t *testing.T) {
 	}
 
 	testCases := []TestCase{
-		TestCase{Digits: 6, Token: 1, Expected: "000001"},
-		TestCase{Digits: 6, Token: 12, Expected: "000012"},
-		TestCase{Digits: 6, Token: 123, Expected: "000123"},
-		TestCase{Digits: 6, Token: 1234, Expected: "001234"},
-		TestCase{Digits: 6, Token: 12345, Expected: "012345"},
-		TestCase{Digits: 6, Token: 123456, Expected: "123456"},
-		TestCase{Digits: 8, Token: 1234567, Expected: "01234567"},
-		TestCase{Digits: 8, Token: 12345678, Expected: "12345678"},
+		{Digits: 6, Token: 1, Expected: "000001"},
+		{Digits: 6, Token: 12, Expected: "000012"},
+		{Digits: 6, Token: 123, Expected: "000123"},
+		{Digits: 6, Token: 1234, Expected: "001234"},
+		{Digits: 6, Token: 12345, Expected: "012345"},
+		{Digits: 6, Token: 123456, Expected: "123456"},
+		{Digits: 8, Token: 1234567, Expected: "01234567"},
+		{Digits: 8, Token: 12345678, Expected: "12345678"},
 	}
 
 	for _, v := range testCases {
