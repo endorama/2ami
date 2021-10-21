@@ -1,6 +1,6 @@
 ![go report](https://goreportcard.com/badge/github.com/endorama/2ami)
 
-![Logo](images/logo.svg)
+<img alt="2ami Secure Two Factor Authenticator logo" src="images/logo.svg" width="100%" />
 
 `2ami` is a two factor authenticator for the CLI that stores 2FA secrets in system keyring, avoiding storing them in cleartext on your computer.
 
