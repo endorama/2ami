@@ -26,17 +26,17 @@ var (
 )
 
 func usage() string {
-	return `Two factor authenticator agent.
+	return `Two factor authenticator for your command line.
 
 Usage:
-  two-factor-authenticator add <name> [--digits=<digits>] [--interval=<seconds>] [--verbose]
-  two-factor-authenticator dump [<name>] [--verbose]
-  two-factor-authenticator generate <name> [-c|--clip] [--verbose]
-  two-factor-authenticator list [--verbose]
-  two-factor-authenticator remove <name> [--verbose]
-  two-factor-authenticator rename <old-name> <new-name>
-  two-factor-authenticator -h | --help
-  two-factor-authenticator --version
+  2ami add <name> [--digits=<digits>] [--interval=<seconds>] [--verbose]
+  2ami dump [<name>] [--verbose]
+  2ami generate <name> [-c|--clip] [--verbose]
+  2ami list [--verbose]
+  2ami remove <name> [--verbose]
+  2ami rename <old-name> <new-name>
+  2ami -h | --help
+  2ami --version
 
 Commands:
   add       Add a new key.
@@ -357,7 +357,7 @@ func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 
 func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 	// first load fron env variable
-	dbPath, dbPathEnvPresent := os.LookupEnv("2FA_DB_PATH")
+	dbPath, dbPathEnvPresent := os.LookupEnv("2AMI_DB_PATH")
 	if dbPathEnvPresent {
 		databaseLocation = filepath.Dir(dbPath)
 		databaseFilename = filepath.Base(dbPath)
@@ -372,16 +372,16 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 
 	// default to user $HOME
 	databaseLocation = userHome
-	databaseFilename = ".2fa.db"
+	databaseFilename = ".2ami.db"
 
 	// then try XDG_CONFIG_HOME
 	// TODO: use XDG_CONFIG_HOME
 	// switch runtime.GOOS {
 	// case "linux":
-	//   databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+	//   databaseLocation = path.Join(userHome, ".config", "2ami")
 	//   databaseFilename = "2fa.db"
 	// case "darwin":
-	//   databaseLocation = path.Join(userHome, ".config", "two-factor-authenticator")
+	//   databaseLocation = path.Join(userHome, ".config", "2ami")
 	//   databaseFilename = "2fa.db"
 	// }
 

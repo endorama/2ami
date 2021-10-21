@@ -126,36 +126,3 @@ func (k *Key) Rename(newName string) error {
 	k.Name = newName
 	return nil
 }
-
-// func (this Key) MarshalJSON() ([]byte, error) {
-// 	m := map[string]interface{}{} // ideally use make with the right capacity
-// 	m["digits"] = this.Digits
-// 	m["interval"]
-// return json.Marshal(map[string]interface{}{
-//		"some_field": w.SomeField,
-//	})
-// 	return json.Marshal(m)
-// }
-
-// func (k *Key) UnmarshalJSON(data []byte) error {
-// 	var rawStrings map[string]interface{}
-
-// 	if err := json.Unmarshal(data, &rawStrings); err != nil {
-// 		return err
-// 	}
-
-// 	k.Name = rawStrings["name"].(string)
-// 	k.Digits = int(rawStrings["digits"].(float64))
-// 	k.Interval = int(rawStrings["interval"].(float64))
-// 	return nil
-// }
-
-// func newKeyFromJSON(value []byte) (Key, error) {
-// 	key := Key{}
-// 	err := json.Unmarshal([]byte(value), &key)
-// 	if err != nil {
-// 		return Key{}, errors.Wrap(err, "cannot unmarshal")
-// 	}
-// 	key.Secret = NewSecretString("two-factor-authenticator", key.Name)
-// 	return key, nil
-// }
