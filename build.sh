@@ -25,17 +25,17 @@ xgo \
     --dest=dist \
     --ldflags "-X main.version=$version" \
     -v -x \
-    github.com/endorama/two-factor-authenticator
+    github.com/endorama/2ami
 
 sudo chown $USER: -R dist
 
 gpg_sign_key="edoardo.tenani@protonmail.com"
-checksum_file="dist/two-factor-authenticator_${version}_checksums.txt"
+checksum_file="dist/2ami-${version}_checksums.txt"
 
-orig_darwin_file="dist/two-factor-authenticator-darwin-10.6-amd64"
-orig_linux_file="dist/two-factor-authenticator-linux-amd64"
-darwin_file="dist/two-factor-authenticator-${version}-darwin-10.6-amd64"
-linux_file="dist/two-factor-authenticator-${version}-linux-amd64"
+orig_darwin_file="dist/2ami-darwin-10.6-amd64"
+orig_linux_file="dist/2ami-linux-amd64"
+darwin_file="dist/2ami-${version}-darwin-10.6-amd64"
+linux_file="dist/2ami-${version}-linux-amd64"
 
 mv -f "$orig_darwin_file" "$darwin_file"
 mv -f "$orig_linux_file" "$linux_file"

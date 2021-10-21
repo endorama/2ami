@@ -13,7 +13,7 @@ func openKeyring() (keyring.Keyring, error){
 			keyring.KeychainBackend,
 			keyring.WinCredBackend,
 		},
-		ServiceName:             "two-factor-authenticator",
+		ServiceName:             "2ami",
 		LibSecretCollectionName: "login",
 	}
 	ring, err := keyring.Open(config)

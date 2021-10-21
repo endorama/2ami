@@ -1,4 +1,4 @@
-module github.com/endorama/two-factor-authenticator
+module github.com/endorama/2ami
 
 go 1.15
 

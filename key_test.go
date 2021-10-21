@@ -60,7 +60,7 @@ func openTestKeyring() (keyring.Keyring, error){
 		AllowedBackends: []keyring.BackendType{
 			keyring.FileBackend,
 		},
-		ServiceName:             "two-factor-authenticator",
+		ServiceName:             "2ami",
 		FilePasswordFunc: func(prompt string) (string, error) { 
 			return "password", nil
 		},

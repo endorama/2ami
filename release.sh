@@ -17,7 +17,7 @@ if [ ! $last_tag_ref == $last_commit_ref ]; then
 fi
 
 export GITHUB_USER=endorama
-export GITHUB_REPO=two-factor-authenticator
+export GITHUB_REPO=2ami
 
 echo "Verifying release"
 if gothub info | grep "name: '$version'" >/dev/null 2>&1; then
