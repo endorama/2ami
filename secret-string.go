@@ -34,7 +34,7 @@ func (s *SecretString) Set(data []byte) error {
 	}
 	err := s.ring.Set(item)
 	if err != nil {
-		return errors.Wrap(err, "cannot set data from keyring")
+		return fmt.Errorf("cannot set data from keyring: %w", err)
 	}
 	return nil
 }
@@ -44,7 +44,7 @@ func (s *SecretString) Set(data []byte) error {
 func (s *SecretString) Value() ([]byte, error) {
 	i, err := s.ring.Get(s.Name)
 	if err != nil {
-		return []byte{}, errors.Wrap(err, "cannot get data from keyring")
+		return []byte{}, fmt.Errorf("cannot get data from keyring: %w", err)
 	}
 	if i.Data == nil {
 		return []byte{}, errors.New("empty data from keyring; was the key removed from it?")
