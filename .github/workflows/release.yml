@@ -1,0 +1,59 @@
+---
+name: build release artefacts
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: get tag annotation
+        run: ::set-output name=content::$(git tag --format='%(contents)' -n2 ${{ github.ref }})
+        id: notes
+
+      - name: check for prerelease
+        run: ::set-output name=flag::$(grep '-' ${{github.ref}} && echo --prerelease)
+        id: prerelease
+
+      - name: create release
+        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ${{steps.prerelease.outputs.flag}}--notes '${{ steps.notes.outputs.content }}'
+
+  release:
+    needs: create-release
+    strategy:
+      matrix:
+        operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
+    runs-on: ${{ matrix.operating-system }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: gather versions
+        uses: ./.github/actions/parse-asdf
+
+      - name: install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: "${{ env.GOLANG_VERSION }}"
+
+      - name: Build the CLI
+        run: go build --ldflags "-X main.version=${{ github.ref }}" -o 2ami-${{ github.ref }}-${{ matrix.operating-system }}
+
+      - name: upload to release (linux)
+        if: "startsWith(runner.os, 'Linux')"
+        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+
+      - name: upload to release (macos)
+        if: "startsWith(runner.os, 'macOS')"
+        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+
+      - name: upload to release (windows)
+        if: "startsWith(runner.os, 'Windows')"
+        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}.exe
+
