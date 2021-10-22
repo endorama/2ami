@@ -18,6 +18,7 @@ jobs:
         id: notes
 
       - name: check for prerelease
+        # NOTE: if tag contains a - is a semver prerelease
         run: ::set-output name=flag::$(grep '-' ${{github.ref}} && echo --prerelease)
         id: prerelease
 
