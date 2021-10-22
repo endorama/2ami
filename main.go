@@ -205,29 +205,29 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 	secret = sanitizeSecret(secret)
 
 	if err = isValidBase32(secret); err != nil {
-		return errors.Wrap(err, "secret is not valid")
+		return fmt.Errorf("secret is not valid: %w", err)
 	}
 
 	ring, err := openKeyring()
 	if err != nil {
-		return errors.Wrap(err, "cannot open keyring")
+		return fmt.Errorf("cannot open keyring: %w", err)
 	}
 	key := NewKey(ring, name)
 	if digits != nil {
 		key.Digits, err = convertStringToInt(digits.(string))
 		if err != nil {
-			return errors.Wrap(err, "cannot convert string to int")
+			return fmt.Errorf("cannot convert string to int: %w", err)
 		}
 	}
 	if interval != nil {
 		key.Interval, err = convertStringToInt(interval.(string))
 		if err != nil {
-			return errors.Wrap(err, "cannot convert string to int")
+			return fmt.Errorf("cannot convert string to int: %w", err)
 		}
 	}
 	err = key.Secret(secret)
 	if err != nil {
-		return errors.Wrap(err, "cannot set secret for key")
+		return fmt.Errorf("cannot set secret for key: %w", err)
 	}
 
 	debugPrint(fmt.Sprintf("%+v", key))
@@ -255,7 +255,7 @@ type generated struct {
 func generate(storage Storage, name string) (generated, error) {
 	ring, err := openKeyring()
 	if err != nil {
-		return generated{}, errors.Wrap(err, "cannot open keyring")
+		return generated{}, fmt.Errorf("cannot open keyring: %w", err)
 	}
 
 	key := KeyFromStorage(storage, ring, name)
@@ -381,7 +381,7 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string, err
 
 	userHome, err := getUserHomeFolder()
 	if err != nil {
-		return "", "", errors.Wrap(err, "cannot get home folder value")
+		return "", "", fmt.Errorf("cannot get home folder value: %w", err)
 	}
 
 	// default to user $HOME

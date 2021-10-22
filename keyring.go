@@ -6,7 +6,7 @@ import (
 	"github.com/99designs/keyring"
 )
 
-func openKeyring() (keyring.Keyring, error){
+func openKeyring() (keyring.Keyring, error) {
 	config := keyring.Config{
 		AllowedBackends: []keyring.BackendType{
 			keyring.SecretServiceBackend,
@@ -18,7 +18,7 @@ func openKeyring() (keyring.Keyring, error){
 	}
 	ring, err := keyring.Open(config)
 	if err != nil {
-		return nil, fmt.Errorf("can't open keyring: %w", err)
+		return nil, fmt.Errorf("cannot open keyring: %w", err)
 	}
 	return ring, nil
 }

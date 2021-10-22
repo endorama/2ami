@@ -5,19 +5,18 @@ package main
 
 import (
 	"encoding/base32"
+	"fmt"
 	"log"
 	"os"
 	"os/user"
 	"strconv"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 func getUserHomeFolder() (string, error) {
 	usr, err := user.Current()
 	if err != nil {
-		return "", errors.Errorf("cannot get home folder: %q", err)
+		return "", fmt.Errorf("cannot get home folder: %w", err)
 	}
 	return usr.HomeDir, nil
 }
