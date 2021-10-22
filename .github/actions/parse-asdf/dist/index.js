@@ -110,6 +110,7 @@ function run() {
             core.startGroup('.tool-versions');
             for (const [key, value] of tools) {
                 core.info(`Gathered '${key}' version ${value}`);
+                core.info(`Exported as ${key.toUpperCase()}_VERSION`);
                 core.exportVariable(`${key.toUpperCase()}_VERSION`, value);
             }
             core.endGroup();

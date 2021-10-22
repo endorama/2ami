@@ -19,7 +19,7 @@ test('parse a file', async () => {
 //   const input = parseInt('foo', 10)
 //   await expect(wait(input)).rejects.toThrow('milliseconds not a number')
 // })
-// 
+//
 // test('wait 500 ms', async () => {
 //   const start = new Date()
 //   await wait(500)
@@ -27,7 +27,7 @@ test('parse a file', async () => {
 //   var delta = Math.abs(end.getTime() - start.getTime())
 //   expect(delta).toBeGreaterThan(450)
 // })
-// 
+//
 // // shows how the runner will run a javascript action with env / stdout protocol
 // test('test runs', () => {
 //   process.env['INPUT_MILLISECONDS'] = '500'
