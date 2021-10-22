@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build:
+  prerelease:
     strategy:
       matrix:
         operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
@@ -25,10 +25,13 @@ jobs:
         with: 
           go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
 
+      - name: Run tests
+        run: go test -v
+
       - name: Build the CLI
         run: go build --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
 
       - uses: actions/upload-artifact@v2
         with:
           name: "artifact-${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
-          path: ./two-factor-authenticator
+          path: ./2ami
