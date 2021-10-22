@@ -19,16 +19,6 @@ hasCommand "asdf" || {
   echo "install it first https://github.com/asdf-vm/asdf";
   exit 1;
 }
-hasCommand "docker" || {
-  echo "required command: docker";
-  echo "install it first https://www.docker.com/";
-  exit 1;
-}
-hasCommand "xgo" || {
-  echo "required command: xgo";
-  echo "install it first https://github.com/karalabe/xgo";
-  exit 1;
-}
 
 script/bootstrap
 
