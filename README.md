@@ -15,8 +15,9 @@ Happy to discuss security improvements! :)
 ## Keyring/Keychain encryption
 
 Enabled secret storage backends are:
-- macOS/OSX Keychain
-- Secret Service ( Gnome )
+* [macOS Keychain](https://support.apple.com/en-au/guide/keychain-access/welcome/mac)
+* [Windows Credential Manager](https://support.microsoft.com/en-au/help/4026814/windows-accessing-credential-manager)
+* Secret Service ([Gnome Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), [KWallet](https://kde.org/applications/system/org.kde.kwalletmanager5))
 
 More storage are available, a full list can be found [here](https://github.com/99designs/keyring). If you are interested and able to test with the specified backend, just open a issue to have it added.
 
