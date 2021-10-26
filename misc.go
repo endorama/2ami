@@ -22,12 +22,13 @@ func getUserHomeFolder() (string, error) {
 	return usr.HomeDir, nil
 }
 
-func convertStringToInt(value string) (returnValue int) {
-	returnValue, err := strconv.Atoi(value)
+func convertStringToInt(value string) (returnValue int, err error) {
+	returnValue, err = strconv.Atoi(value)
 	if err != nil {
-		log.Fatal(err)
+		return returnValue, err
 	}
-	return returnValue
+
+	return returnValue, nil
 }
 
 //nolint
@@ -46,6 +47,6 @@ func printErrorsAndExit(errors []error) {
 		for _, element := range errors {
 			ui.Error(element.Error())
 		}
-		os.Exit(1)
+		os.Exit(1) // skipcq: RVV-A0003
 	}
 }
