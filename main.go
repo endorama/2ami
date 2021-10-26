@@ -56,6 +56,8 @@ Options:
 `
 }
 
+const databaseLocationPerm = 0755
+
 func main() {
 	checkAndEnableDebugMode()
 	debugPrint("Enabled debug logging...")
@@ -80,7 +82,7 @@ func main() {
 
 	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
-	err := os.MkdirAll(databaseLocation, 0755)
+	err := os.MkdirAll(databaseLocation, databaseLocationPerm)
 	if err != nil {
 		ui.Error(fmt.Sprintf("Cannot create database location; %s", err))
 	}
