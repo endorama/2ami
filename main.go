@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	docopt "github.com/docopt/docopt.go"
+	"github.com/pkg/errors"
 
 	"github.com/atotto/clipboard"
 	"github.com/mitchellh/cli"
@@ -78,11 +79,14 @@ func main() {
 	arguments, _ := docopt.ParseDoc(usage)
 	debugPrint(fmt.Sprint(arguments))
 
-	databaseLocation, databaseFilename := getDatabaseConfigurations()
+	databaseLocation, databaseFilename, err := getDatabaseConfigurations()
+	if err != nil {
+		ui.Error(err.Error())
+	}
 
 	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
-	err := os.MkdirAll(databaseLocation, databaseLocationPerm)
+	err = os.MkdirAll(databaseLocation, databaseLocationPerm)
 	if err != nil {
 		ui.Error(fmt.Sprintf("Cannot create database location; %s", err))
 	}
@@ -132,7 +136,10 @@ func main() {
 			ui.Error("argument 'name' cannot be empty")
 			os.Exit(1)
 		}
-		token := generate(storage, name)
+		token, err := generate(storage, name)
+		if err != nil {
+			ui.Error(err.Error())
+		}
 
 		if arguments["--clip"].(bool) {
 			err = clipboard.WriteAll(token.Value)
@@ -198,24 +205,29 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 	secret = sanitizeSecret(secret)
 
 	if err = isValidBase32(secret); err != nil {
-		ui.Error(fmt.Sprintf("secret is not valid: %s", err))
-		os.Exit(2)
+		return errors.Wrap(err, "secret is not valid")
 	}
 
 	ring, err := openKeyring()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "cannot open keyring")
 	}
 	key := NewKey(ring, name)
 	if digits != nil {
-		key.Digits = convertStringToInt(digits.(string))
+		key.Digits, err = convertStringToInt(digits.(string))
+		if err != nil {
+			return errors.Wrap(err, "cannot convert string to int")
+		}
 	}
 	if interval != nil {
-		key.Interval = convertStringToInt(interval.(string))
+		key.Interval, err = convertStringToInt(interval.(string))
+		if err != nil {
+			return errors.Wrap(err, "cannot convert string to int")
+		}
 	}
 	err = key.Secret(secret)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "cannot set secret for key")
 	}
 
 	debugPrint(fmt.Sprintf("%+v", key))
@@ -228,29 +240,29 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 		return err
 	}
 	if !result {
-		ui.Error("something went wrong adding key")
-		os.Exit(1)
+		return errors.New("something went wrong adding key")
 	}
+
 	ui.Info("Key successfully added")
 	return nil
 }
 
-func generate(storage Storage, name string) struct {
+type generated struct {
 	Value     string
 	ExpiresIn int
-} {
+}
+
+func generate(storage Storage, name string) (generated, error) {
 	ring, err := openKeyring()
 	if err != nil {
-		log.Fatal(err)
+		return generated{}, errors.Wrap(err, "cannot open keyring")
 	}
+
 	key := KeyFromStorage(storage, ring, name)
-	return struct {
-		Value     string
-		ExpiresIn int
-	}{
+	return generated{
 		Value:     key.GenerateToken(),
 		ExpiresIn: key.ExpiresIn(),
-	}
+	}, nil
 }
 
 func list(ui cli.Ui, storage Storage) (errors []error) {
@@ -357,19 +369,19 @@ func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 	return nil
 }
 
-func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
+func getDatabaseConfigurations() (databaseLocation, databaseFilename string, err error) {
 	// first load fron env variable
 	dbPath, dbPathEnvPresent := os.LookupEnv("2AMI_DB_PATH")
 	if dbPathEnvPresent {
 		databaseLocation = filepath.Dir(dbPath)
 		databaseFilename = filepath.Base(dbPath)
 
-		return databaseLocation, databaseFilename
+		return databaseLocation, databaseFilename, nil
 	}
 
 	userHome, err := getUserHomeFolder()
 	if err != nil {
-		log.Fatal(err)
+		return "", "", errors.Wrap(err, "cannot get home folder value")
 	}
 
 	// default to user $HOME
@@ -387,7 +399,7 @@ func getDatabaseConfigurations() (databaseLocation, databaseFilename string) {
 	//   databaseFilename = "2fa.db"
 	// }
 
-	return databaseLocation, databaseFilename
+	return databaseLocation, databaseFilename, nil
 }
 
 func sanitizeSecret(data string) string {
