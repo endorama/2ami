@@ -221,7 +221,7 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 	debugPrint(fmt.Sprintf("%+v", key))
 
 	marshal, _ := json.Marshal(key)
-	debugPrint(fmt.Sprintf("%s", marshal))
+	debugPrint(string(marshal))
 
 	result, err := storage.AddKey(name, []byte(marshal))
 	if err != nil {
@@ -340,7 +340,7 @@ func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 		ui.Error(fmt.Sprintf("Error renaming key %s: %s", oldName, err))
 	}
 	marshal, _ := json.Marshal(key)
-	debugPrint(fmt.Sprintf("%s", marshal))
+	debugPrint(string(marshal))
 
 	result, err := storage.AddKey(key.Name, []byte(marshal))
 	if err != nil {
