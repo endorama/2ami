@@ -396,7 +396,7 @@ func sanitizeSecret(data string) string {
 	// Base32 is always uppercase
 	data = strings.ToUpper(data)
 	// remove all spaces in the string
-	data = strings.Replace(data, " ", "", -1)
+	data = strings.ReplaceAll(data, " ", "")
 	return data
 }
 
