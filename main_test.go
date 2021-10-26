@@ -7,8 +7,6 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {}
-
 func TestIsValidBase32_whitValidData(t *testing.T) {
 	if isValidBase32("ORSXG5A=") != nil {
 		t.Error("Not a valid Base32 string")
