@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"testing"
 	"time"
@@ -51,7 +52,7 @@ func _generateTotp(secret string, digits int) string {
 // openTestKeyring replaces openKeyring function to use a file backend instead
 // This should allow running tests on all platforms without any OS specific
 // dependency.
-func openTestKeyring() (keyring.Keyring, error){
+func openTestKeyring() (keyring.Keyring, error) {
 	path, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -60,8 +61,8 @@ func openTestKeyring() (keyring.Keyring, error){
 		AllowedBackends: []keyring.BackendType{
 			keyring.FileBackend,
 		},
-		ServiceName:             "2ami",
-		FilePasswordFunc: func(prompt string) (string, error) { 
+		ServiceName: "2ami",
+		FilePasswordFunc: func(prompt string) (string, error) {
 			return "password", nil
 		},
 		FileDir: path,
@@ -103,5 +104,21 @@ func TestKeyGenerateTotp(t *testing.T) {
 	generatedToken = key.GenerateToken()
 	if generatedToken != token {
 		t.Errorf("Wrong token. Expected %s Actual %s", token, generatedToken)
+	}
+}
+
+func TestKeyGenerateotpauthURI(t *testing.T) {
+	ring, _ := openTestKeyring()
+
+	key := NewKey(ring, "test")
+	secretValue := "ORSXG5A="
+	_ = key.Secret(secretValue)
+	want := fmt.Sprintf("otpauth://totp/test?digits=6&period=30&secret=%s", url.QueryEscape(secretValue))
+	got, err := key.OtpauthURI()
+	if err != nil {
+		t.Errorf("error occurred: %s", err.Error())
+	}
+	if got != want {
+		t.Errorf("wrong oauthURI. Expected %s Actual %s", want, got)
 	}
 }

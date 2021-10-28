@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
 	"time"
 
 	"github.com/99designs/keyring"
@@ -21,12 +22,12 @@ const (
 )
 
 type Key struct {
-	Name     string       `json:"name"`
-	Type     KeyType      `json:"type,int8"` //nolint
-	Digits   int          `json:"digits,int"` //nolint
-	Interval int          `json:"interval,int"` //nolint
-	Counter  int          `json:"counter,int"` //nolint
-	secret   SecretString 
+	Name     string  `json:"name"`
+	Type     KeyType `json:"type,int8"`    //nolint
+	Digits   int     `json:"digits,int"`   //nolint
+	Interval int     `json:"interval,int"` //nolint
+	Counter  int     `json:"counter,int"`  //nolint
+	secret   SecretString
 }
 
 func NewKey(ring keyring.Keyring, name string) Key {
@@ -125,4 +126,30 @@ func (k *Key) Rename(newName string) error {
 	}
 	k.Name = newName
 	return nil
+}
+
+func (k Key) OtpauthURI() (string, error) {
+	out := url.URL{
+		Scheme: "otpauth",
+		Path:   k.Name,
+	}
+	q := out.Query()
+	secret, err := k.secret.Value()
+	if err != nil {
+		return "", fmt.Errorf("cannot read key secret: %w", err)
+	}
+	q.Set("secret", string(secret))
+	q.Set("digits", fmt.Sprint(k.Digits))
+
+	if k.Type == TOTP_TOKEN {
+		out.Host = "totp"
+		q.Set("period", fmt.Sprint(k.Interval))
+	} else if k.Type == HOTP_TOKEN {
+		out.Host = "hotp"
+		q.Set("counter", fmt.Sprint(k.Counter))
+	}
+
+	out.RawQuery = q.Encode()
+
+	return out.String(), nil
 }
