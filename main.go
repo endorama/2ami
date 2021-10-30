@@ -12,8 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/OpenPeeDeeP/xdg"
 	docopt "github.com/docopt/docopt.go"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 
 	"github.com/atotto/clipboard"
 	"github.com/mitchellh/cli"
@@ -74,6 +76,9 @@ func main() {
 			ErrorWriter: os.Stderr,
 		},
 	}
+
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("2AMI")
 
 	usage := usage()
 	arguments, _ := docopt.ParseDoc(usage)
