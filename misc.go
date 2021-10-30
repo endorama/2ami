@@ -5,21 +5,11 @@ package main
 
 import (
 	"encoding/base32"
-	"fmt"
 	"log"
 	"os"
-	"os/user"
 	"strconv"
 	"strings"
 )
-
-func getUserHomeFolder() (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return "", fmt.Errorf("cannot get home folder: %w", err)
-	}
-	return usr.HomeDir, nil
-}
 
 func convertStringToInt(value string) (returnValue int, err error) {
 	returnValue, err = strconv.Atoi(value)
