@@ -52,12 +52,14 @@ Options:
   -h --help             Show this screen.
   --version             Show version.
   --verbose             Enable verbose output.
-  --db=<db-path>        Path to the keys database.
   --digits=<digits>     Number of token digits.
   --interval=<seconds>  Interval in seconds between token generation.
   -c --clip             Copy result to the clipboard.
 
 Environment variables:
+  2AMI_DB    Path to the database where 2FA keys information are stored.
+						 Default to $XDG_DATA_HOME/2ami/database.boltdb.
+						 For non Linux values of XDG_DATA_HOME see https://github.com/OpenPeeDeeP/xdg
 	2AMI_RING	 Name of the keyring/keychain where 2FA secrets will be stored.
 						 Default to "login".
 `
@@ -81,6 +83,7 @@ func main() {
 		},
 	}
 
+	viper.SetDefault("db", filepath.Join(xdg.DataHome(), "2ami", "database.boltdb"))
 	viper.SetDefault("ring", "login")
 
 	viper.AutomaticEnv()
@@ -381,34 +384,8 @@ func rename(ui cli.Ui, storage Storage, oldName string, newName string) error {
 }
 
 func getDatabaseConfigurations() (databaseLocation, databaseFilename string, err error) {
-	// first load fron env variable
-	dbPath, dbPathEnvPresent := os.LookupEnv("2AMI_DB_PATH")
-	if dbPathEnvPresent {
-		databaseLocation = filepath.Dir(dbPath)
-		databaseFilename = filepath.Base(dbPath)
-
-		return databaseLocation, databaseFilename, nil
-	}
-
-	userHome, err := getUserHomeFolder()
-	if err != nil {
-		return "", "", fmt.Errorf("cannot get home folder value: %w", err)
-	}
-
-	// default to user $HOME
-	databaseLocation = userHome
-	databaseFilename = ".2ami.db"
-
-	// then try XDG_CONFIG_HOME
-	// TODO: use XDG_CONFIG_HOME
-	// switch runtime.GOOS {
-	// case "linux":
-	//   databaseLocation = path.Join(userHome, ".config", "2ami")
-	//   databaseFilename = "2fa.db"
-	// case "darwin":
-	//   databaseLocation = path.Join(userHome, ".config", "2ami")
-	//   databaseFilename = "2fa.db"
-	// }
+	databaseLocation = filepath.Dir(viper.GetString("db"))
+	databaseFilename = filepath.Base(viper.GetString("db"))
 
 	return databaseLocation, databaseFilename, nil
 }
