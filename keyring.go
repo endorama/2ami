@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/99designs/keyring"
+	"github.com/spf13/viper"
 )
 
 func openKeyring() (keyring.Keyring, error) {
@@ -14,7 +15,9 @@ func openKeyring() (keyring.Keyring, error) {
 			keyring.WinCredBackend,
 		},
 		ServiceName:             "2ami",
-		LibSecretCollectionName: "login",
+		KeychainName:            viper.GetString("ring"),
+		LibSecretCollectionName: viper.GetString("ring"),
+		WinCredPrefix:           viper.GetString("ring"),
 	}
 	ring, err := keyring.Open(config)
 	if err != nil {

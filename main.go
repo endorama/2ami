@@ -56,6 +56,10 @@ Options:
   --digits=<digits>     Number of token digits.
   --interval=<seconds>  Interval in seconds between token generation.
   -c --clip             Copy result to the clipboard.
+
+Environment variables:
+	2AMI_RING	 Name of the keyring/keychain where 2FA secrets will be stored.
+						 Default to "login".
 `
 }
 
@@ -76,6 +80,8 @@ func main() {
 			ErrorWriter: os.Stderr,
 		},
 	}
+
+	viper.SetDefault("ring", "login")
 
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("2AMI")
