@@ -7,6 +7,7 @@ import (
 	"encoding/base32"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,6 +39,8 @@ Usage:
   2ami list [--verbose]
   2ami remove <name> [--verbose]
   2ami rename <old-name> <new-name>
+  2ami backup <file-path>
+  2ami restore <file-path>
   2ami -h | --help
   2ami --version
 
@@ -47,6 +50,8 @@ Commands:
   generate  Generate a token from a known key.
   list      List known keys.
   remove    Remove specified key.
+  backup    Backup keys to a specified file
+  restore   Restore keys from a specified file
 
 Options:
   -h --help             Show this screen.
@@ -122,7 +127,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		err := add(&ui, storage, name, arguments["--digits"], arguments["--interval"])
+		err := addWithPrompt(&ui, storage, name, arguments["--digits"], arguments["--interval"])
 		if err != nil {
 			ui.Error("An unexpected error occurred. Use DEBUG=true to show logs.")
 			debugPrint(fmt.Sprintf("%s", err))
@@ -143,6 +148,56 @@ func main() {
 			os.Exit(1)
 		}
 		os.Exit(0)
+	}
+	if arguments["backup"].(bool) {
+		backupPath := arguments["<file-path>"].(string)
+		if backupPath == "" {
+			ui.Error("argument 'file-path' cannot be empty")
+			os.Exit(1)
+		}
+
+		password, err := ui.AskSecret("Password for backup file: ")
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error reading stdin: %s", err))
+			os.Exit(1)
+		}
+
+		data, err := backupAllKeys(storage, password)
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error during backup: %s", err))
+			os.Exit(1)
+		}
+
+		err = ioutil.WriteFile(backupPath, []byte(data), 0664)
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error writing backup file: %s", err))
+			os.Exit(1)
+		}
+	}
+	if arguments["restore"].(bool) {
+		backupPath := arguments["<file-path>"].(string)
+		if backupPath == "" {
+			ui.Error("argument 'file-path' cannot be empty")
+			os.Exit(1)
+		}
+
+		data, err := ioutil.ReadFile(backupPath)
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error reading backup file: %s", err))
+			os.Exit(1)
+		}
+
+		password, err := ui.AskSecret("Password for backup file: ")
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error reading stdin: %s", err))
+			os.Exit(1)
+		}
+
+		err = restore(storage, string(data), password)
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error during restore: %s", err))
+			os.Exit(1)
+		}
 	}
 	if arguments["generate"].(bool) {
 		name := arguments["<name>"].(string)
@@ -211,14 +266,22 @@ func checkAndEnableDebugMode() {
 	}
 }
 
-func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval interface{}) error {
+func addWithPrompt(ui cli.Ui, storage Storage, name string, digits interface{}, interval interface{}) error {
 	secret, err := ui.AskSecret(fmt.Sprintf("2fa secret for %s ( will not be printed ): ", name))
 	if err != nil {
 		return err
 	}
 	secret = sanitizeSecret(secret)
+	if err := add(storage, name, secret, digits, interval); err != nil {
+		return err
+	}
 
-	if err = isValidBase32(secret); err != nil {
+	ui.Info("Key successfully added")
+	return nil
+}
+
+func add(storage Storage, name string, secret string, digits interface{}, interval interface{}) error {
+	if err := isValidBase32(secret); err != nil {
 		return fmt.Errorf("secret is not valid: %w", err)
 	}
 
@@ -257,7 +320,6 @@ func add(ui cli.Ui, storage Storage, name string, digits interface{}, interval i
 		return errors.New("something went wrong adding key")
 	}
 
-	ui.Info("Key successfully added")
 	return nil
 }
 
