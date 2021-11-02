@@ -30,7 +30,7 @@ jobs:
         run: go test -v
 
       - name: Build the CLI
-        run: go build --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
+        run: go build -trimpath --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
 
       - uses: actions/upload-artifact@v2
         if: "startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')"

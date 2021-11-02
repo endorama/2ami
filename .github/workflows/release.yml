@@ -44,7 +44,7 @@ jobs:
           go-version: "${{ env.GOLANG_VERSION }}"
 
       - name: Build the CLI
-        run: go build --ldflags "-X main.version=${{ github.ref }}" -o 2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        run: go build -trimpath --ldflags "-X main.version=${{ github.ref }}" -o 2ami-${{ github.ref }}-${{ matrix.operating-system }}
 
       - name: upload to release (linux)
         if: "startsWith(runner.os, 'Linux')"
