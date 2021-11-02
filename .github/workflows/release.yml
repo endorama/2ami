@@ -23,7 +23,7 @@ jobs:
         id: prerelease
 
       - name: create release
-        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ${{steps.prerelease.outputs.flag}}--notes '${{ steps.notes.outputs.content }}'
+        run: gh release create ${{ github.ref }} --title ${{ github.ref }} ${{steps.prerelease.outputs.flag}} --notes '${{ steps.notes.outputs.content }}'
 
   release:
     needs: create-release
