@@ -28,8 +28,14 @@ jobs:
         with:
           version: v1.33
 
+  # Run tests on all platform, as part of the code in 99designs/keyring is platform specific
+  # To prevent nightly from breaking due to changes introduced from a PR, run tests across all
+  # supported platforms.
   tests:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
+    runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Disable EOL conversions
         run: git config --global core.autocrlf false
@@ -44,7 +50,7 @@ jobs:
       - name: install Go
         uses: actions/setup-go@v1
         with: 
-          go-version: "${{fromJson(steps.versions.outputs.tools).golang}}"
+          go-version: "${{ env.GOLANG_VERSION }}"
 
       - name: Run tests
         run: go test -v
