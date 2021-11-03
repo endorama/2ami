@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/OpenPeeDeeP/xdg v1.0.0 // indirect
+	github.com/OpenPeeDeeP/xdg v1.0.0
 	github.com/atotto/clipboard v0.1.0
 	github.com/boltdb/bolt v1.3.1
 	github.com/danieljoos/wincred v1.1.2 // indirect
