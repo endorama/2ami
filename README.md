@@ -65,9 +65,9 @@ Options:
 Environment variables:
   2AMI_DB    Path to the database where 2FA keys information are stored.
              Default to $XDG_DATA_HOME/2ami/database.boltdb.
-						 For non Linux values of XDG_DATA_HOME see https://github.com/OpenPeeDeeP/xdg
-	2AMI_RING	 Name of the keyring/keychain where 2FA secrets will be stored.
-						 Default to "login".
+             For non Linux values of XDG_DATA_HOME see https://github.com/OpenPeeDeeP/xdg
+  2AMI_RING	 Name of the keyring/keychain where 2FA secrets will be stored.
+             Default to "login".
 ```
 
 ## Generated tokens
