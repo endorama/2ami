@@ -51,8 +51,8 @@ Commands:
   generate  Generate a token from a known key.
   list      List known keys.
   remove    Remove specified key.
-  backup    Backup keys to a specified file
-  restore   Restore keys from a specified file
+  backup    Backup keys to a specified file (with encryption)
+  restore   Restore keys from a specified encrypted file
 
 Options:
   -h --help             Show this screen.
