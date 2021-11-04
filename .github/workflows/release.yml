@@ -57,21 +57,26 @@ jobs:
       - name: Build the CLI
         run: go build -trimpath --ldflags "-X main.version=${{ needs.create-release.outputs.version }}" -o 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
 
-      - name: upload to release (linux)
-        if: "startsWith(runner.os, 'Linux')"
+      - name: upload to release
         run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: upload to release (macos)
-        if: "startsWith(runner.os, 'macOS')"
-        run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: upload to release (windows)
-        if: "startsWith(runner.os, 'Windows')"
-        run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      # - name: upload to release (linux)
+      #   if: "startsWith(runner.os, 'Linux')"
+      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 
+      # - name: upload to release (macos)
+      #   if: "startsWith(runner.os, 'macOS')"
+      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 
+      # - name: upload to release (windows)
+      #   if: "startsWith(runner.os, 'Windows')"
+      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.exe
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 
