@@ -40,6 +40,8 @@ Usage:
   2ami list [--verbose]
   2ami remove <name> [--verbose]
   2ami rename <old-name> <new-name>
+  2ami backup <file-path>
+  2ami restore <file-path>
   2ami -h | --help
   2ami --version
 
@@ -49,15 +51,23 @@ Commands:
   generate  Generate a token from a known key.
   list      List known keys.
   remove    Remove specified key.
+  backup    Backup keys to a specified file
+  restore   Restore keys from a specified file
 
 Options:
   -h --help             Show this screen.
   --version             Show version.
   --verbose             Enable verbose output.
-  --db=<db-path>        Path to the keys database.
   --digits=<digits>     Number of token digits.
   --interval=<seconds>  Interval in seconds between token generation.
   -c --clip             Copy result to the clipboard.
+
+Environment variables:
+  2AMI_DB    Path to the database where 2FA keys information are stored.
+             Default to $XDG_DATA_HOME/2ami/database.boltdb.
+						 For non Linux values of XDG_DATA_HOME see https://github.com/OpenPeeDeeP/xdg
+	2AMI_RING	 Name of the keyring/keychain where 2FA secrets will be stored.
+						 Default to "login".
 ```
 
 ## Generated tokens
@@ -65,11 +75,12 @@ Options:
 Generated token are formatted as Google Authenticator: zeros are prepended in
 place of missing digits.
 
-## TODO
-
-- custom token formatters
-- backup/restore functionalities
+Custom formatters may be implemented if needed.
 
 ## Known issues
 
 None.
+
+## Contributors
+
+[@backwards-rat-race](https://github.com/backwards-rat-race)
