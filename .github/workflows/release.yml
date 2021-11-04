@@ -12,6 +12,8 @@ permissions:
 jobs:
   create-release:
     runs-on: ubuntu-20.04
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -53,23 +55,23 @@ jobs:
           go-version: "${{ env.GOLANG_VERSION }}"
 
       - name: Build the CLI
-        run: go build -trimpath --ldflags "-X main.version=${{ github.ref }}" -o 2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        run: go build -trimpath --ldflags "-X main.version=${{ needs.create-release.outputs.version }}" -o 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
 
       - name: upload to release (linux)
         if: "startsWith(runner.os, 'Linux')"
-        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        run: gh release upload ${{github.ref}} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: upload to release (macos)
         if: "startsWith(runner.os, 'macOS')"
-        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        run: gh release upload ${{github.ref}} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: upload to release (windows)
         if: "startsWith(runner.os, 'Windows')"
-        run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}.exe
+        run: gh release upload ${{github.ref}} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
