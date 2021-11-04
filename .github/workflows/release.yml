@@ -58,12 +58,18 @@ jobs:
       - name: upload to release (linux)
         if: "startsWith(runner.os, 'Linux')"
         run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: upload to release (macos)
         if: "startsWith(runner.os, 'macOS')"
         run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: upload to release (windows)
         if: "startsWith(runner.os, 'Windows')"
         run: gh release upload ${{github.ref}} ./2ami-${{ github.ref }}-${{ matrix.operating-system }}.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
