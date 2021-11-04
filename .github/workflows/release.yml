@@ -17,12 +17,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: get tag annotation
-        run: echo '::set-output name=content::$(git tag --format='%(contents)' -n2 ${{ github.ref }})'
+        run: echo "::set-output name=content::$(git tag --format='%(contents)' -n2 ${{ github.ref }})"
         id: notes
 
       - name: check for prerelease
         # NOTE: if tag contains a - is a semver prerelease
-        run: echo '::set-output name=flag::$(grep '-' ${{github.ref}} && echo --prerelease)'
+        run: echo "::set-output name=flag::$(grep '-' ${{github.ref}} && echo --prerelease)"
         id: prerelease
 
       - name: create release
