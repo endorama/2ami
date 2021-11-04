@@ -17,7 +17,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: get tag annotation
-        run: ::set-output name=content::$(git tag --format='%(contents)' -n2 ${{ github.ref }})
+        run: |
+          ::set-output name=content::$(git tag --format='%(contents)' -n2 ${{ github.ref }})
         id: notes
 
       - name: check for prerelease
