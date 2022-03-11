@@ -62,6 +62,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: create checksum
+        if: "startswith(runner.os, 'linux')"
+        run: sha256sum 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
+      - name: upload to release
+        run: gh release upload ${{ needs.create-release.outputs.version }} ./checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # - name: upload to release (linux)
       #   if: "startsWith(runner.os, 'Linux')"
       #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
