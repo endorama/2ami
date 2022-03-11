@@ -7,8 +7,8 @@
    viewBox="0 0 196.54623 137.80827"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1 (ce6663b3b7, 2021-05-25)"
-   sodipodi:docname="logo.svg"
+   inkscape:version="1.1.2 (76b9e6a115, 2022-02-25)"
+   sodipodi:docname="icon.svg"
    inkscape:export-filename="/home/endorama/code/github.com/endorama/2ami/logo.png"
    inkscape:export-xdpi="433.76001"
    inkscape:export-ydpi="433.76001"
@@ -38,11 +38,11 @@
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
      units="px"
-     inkscape:zoom="0.36709809"
-     inkscape:cx="1160.4528"
-     inkscape:cy="389.54166"
-     inkscape:window-width="1920"
-     inkscape:window-height="1133"
+     inkscape:zoom="5.3285692"
+     inkscape:cx="363.88755"
+     inkscape:cy="379.08863"
+     inkscape:window-width="2560"
+     inkscape:window-height="1373"
      inkscape:window-x="0"
      inkscape:window-y="30"
      inkscape:window-maximized="1"
@@ -87,17 +87,17 @@
     <g
        id="g1030"
        transform="matrix(1.0482904,0,0,1.0482904,91.444489,107.14214)"
-       style="fill:#ffffff">
+       style="fill:#ffff00">
       <g
          id="g1014"
-         style="fill:#ffffff"
+         style="fill:#ffff00"
          transform="matrix(0.90277647,0,0,0.90277647,-21.259726,66.001413)">
         <path
            fill="#000000"
-           d="m 50.990837,53.886303 -10.129615,8.656108 0.04173,10.118336 8.631766,2.803479 8.532195,-3.773454 3.044138,-5.227206 1.618632,-8.957372 z M 52.41,67.562 v 3.694 c 0,1.331 -1.079,2.41 -2.41,2.41 -1.331,0 -2.409,-1.079 -2.409,-2.41 v -3.694 c -1.438,-0.833 -2.408,-2.386 -2.408,-4.167 0,-2.661 2.156,-4.817 4.817,-4.817 2.661,0 4.818,2.156 4.818,4.817 0,1.782 -0.97,3.334 -2.408,4.167 z"
+           d="m 42.910638,56.685971 c -1.464709,1.4602 -2.049416,5.85644 -2.049416,5.85644 l 0.04173,10.118336 c 0,0 1.128234,3.001743 2.436989,3.664219 3.926652,1.987624 9.622047,1.961687 13.188742,-0.616671 5.123119,-5.465212 5.203296,-4.481914 7.99322,-21.899103 -5.414373,0.120869 -17.514889,-0.851946 -21.611265,2.876779 z M 52.41,67.562 v 3.694 c 0,1.331 -1.079,2.41 -2.41,2.41 -1.331,0 -2.409,-1.079 -2.409,-2.41 v -3.694 c -1.438,-0.833 -2.408,-2.386 -2.408,-4.167 0,-2.661 2.156,-4.817 4.817,-4.817 2.661,0 4.818,2.156 4.818,4.817 0,1.782 -0.97,3.334 -2.408,4.167 z"
            id="path1012"
            style="fill:#ffffff"
-           sodipodi:nodetypes="cccccccccssscsssc" />
+           sodipodi:nodetypes="cccaccccssscsssc" />
       </g>
     </g>
   </g>
