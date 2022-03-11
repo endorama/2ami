@@ -17,8 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: gather versions
-        uses: ./.github/actions/parse-asdf
+      - uses: endorama/asdf-parse-tool-versions
         id: versions
 
       - name: install Go
