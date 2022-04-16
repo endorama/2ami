@@ -7,7 +7,7 @@
    viewBox="0 0 196.54623 137.80827"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (76b9e6a115, 2022-02-25)"
+   inkscape:version="1.1.2 (08b2f3d93c, 2022-04-05)"
    sodipodi:docname="icon.svg"
    inkscape:export-filename="/home/endorama/code/github.com/endorama/2ami/logo.png"
    inkscape:export-xdpi="433.76001"
@@ -16,15 +16,19 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1217">2ami logo</title>
   <sodipodi:namedview
      id="namedview7"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
      inkscape:document-units="px"
      showgrid="false"
      fit-margin-top="0"
@@ -38,9 +42,9 @@
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
      units="px"
-     inkscape:zoom="5.3285692"
-     inkscape:cx="363.88755"
-     inkscape:cy="379.08863"
+     inkscape:zoom="1.2775604"
+     inkscape:cx="381.1953"
+     inkscape:cy="290.39724"
      inkscape:window-width="2560"
      inkscape:window-height="1373"
      inkscape:window-x="0"
@@ -100,9 +104,44 @@
            sodipodi:nodetypes="cccaccccssscsssc" />
       </g>
     </g>
+    <path
+       id="rect854"
+       style="fill:#ffffff;fill-opacity:0.993098;stroke-width:15.875;stroke-linecap:round"
+       d="m 61.044576,152.17037 v 6.45903 c 0,0.49024 0.12188,0.93733 0.365869,1.33946 0.243988,0.40213 0.648766,0.75224 1.211296,1.04593 l 13.322185,6.82491 c 1.147648,0.56478 2.408309,1.00334 3.779612,1.32188 -1.371303,0.31854 -2.629704,0.75884 -3.779612,1.32136 l -13.322185,6.86315 c -0.56253,0.2711 -0.967308,0.61268 -1.211296,1.02836 -0.243989,0.41569 -0.365869,0.86957 -0.365869,1.35754 v 6.45904 L 90.14926,170.99557 v -3.6685 z" />
   </g>
   <metadata
      id="metadata883">
-    <rdf:RDF />
+    <rdf:RDF>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-nc-nd/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:prohibits
+           rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+      </cc:License>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
+        <dc:title>2ami logo</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Edoardo Tenani</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Some Rights Reserved</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>A black terminal like command prompt with 2ami text.</dc:description>
+      </cc:Work>
+    </rdf:RDF>
   </metadata>
 </svg>
