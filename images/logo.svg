@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1889.7632"
-   height="520.85016"
-   viewBox="0 0 499.99985 137.80827"
+   width="1949.7632"
+   height="580.85016"
+   viewBox="0 0 515.87485 153.68327"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (76b9e6a115, 2022-02-25)"
+   inkscape:version="1.1.2 (08b2f3d93c, 2022-04-05)"
    sodipodi:docname="logo.svg"
    inkscape:export-filename="/home/endorama/code/github.com/endorama/2ami/logo.png"
    inkscape:export-xdpi="433.76001"
@@ -16,21 +16,25 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1225">2ami Logo</title>
   <sodipodi:namedview
      id="namedview7"
-     pagecolor="#ffffff"
+     pagecolor="#323232"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="1"
      inkscape:pagecheckerboard="0"
      inkscape:document-units="px"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
+     showgrid="true"
+     fit-margin-top="30"
+     fit-margin-left="30"
+     fit-margin-right="30"
+     fit-margin-bottom="30"
      showguides="false"
      inkscape:guide-bbox="true"
      inkscape:snap-object-midpoints="true"
@@ -38,23 +42,26 @@
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
      units="px"
-     inkscape:zoom="2.6773517"
-     inkscape:cx="531.49536"
-     inkscape:cy="240.9097"
+     inkscape:zoom="0.42549405"
+     inkscape:cx="888.37905"
+     inkscape:cy="190.36694"
      inkscape:window-width="2560"
      inkscape:window-height="1373"
      inkscape:window-x="0"
      inkscape:window-y="30"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1">
+     inkscape:current-layer="layer1"
+     inkscape:lockguides="true">
     <sodipodi:guide
        position="2.4403528,132.92758"
        orientation="1,0"
-       id="guide5564" />
+       id="guide5564"
+       inkscape:locked="true" />
     <sodipodi:guide
        position="11.509375,129.73848"
        orientation="0,-1"
-       id="guide13022" />
+       id="guide13022"
+       inkscape:locked="true" />
   </sodipodi:namedview>
   <defs
      id="defs2" />
@@ -62,7 +69,16 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-39.815325,-139.32935)">
+     transform="translate(-31.877825,-131.39186)">
+    <rect
+       style="fill:#ffffff;fill-opacity:0.993098;stroke-width:18.326;stroke-linecap:round"
+       id="rect993"
+       width="515.87482"
+       height="153.68327"
+       x="31.877825"
+       y="131.39186"
+       ry="4.5384974"
+       rx="0" />
     <g
        id="g1050"
        transform="matrix(2.259152,0,0,2.259152,25.130837,95.275891)">
@@ -124,6 +140,37 @@
   </g>
   <metadata
      id="metadata883">
-    <rdf:RDF />
+    <rdf:RDF>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-nc-nd/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:prohibits
+           rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+      </cc:License>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
+        <dc:title>2ami Logo</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Edoardo Tenani</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Some Rights Reserved</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>A black terminal like command prompt with 2ami text. On the right the text Secure Two Factor Authenticator.</dc:description>
+      </cc:Work>
+    </rdf:RDF>
   </metadata>
 </svg>
