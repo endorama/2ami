@@ -24,7 +24,7 @@ tasks:
       OS: "{{OS}}"
       ARCH: "{{ARCH}}"
     preconditions:
-      - sh: "[ '$GITHUB_TOKEN' != "" ]"
+      - sh: "[ -n \"$GITHUB_TOKEN\" ]"
         msg: "GITHUB_TOKEN must be set"
 
   release:upload:
@@ -35,5 +35,5 @@ tasks:
       OS: "{{OS}}"
       ARCH: "{{ARCH}}"
     preconditions:
-      - sh: "[ '$GITHUB_TOKEN' != "" ]"
+      - sh: "[ -n \"$GITHUB_TOKEN\" ]"
         msg: "GITHUB_TOKEN must be set"
