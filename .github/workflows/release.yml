@@ -49,31 +49,24 @@ jobs:
       - uses: endorama/asdf-parse-tool-versions@v1.0.0
         id: versions
 
+      - name: Install Task
+        uses: arduino/setup-task@v1
+
       - name: install Go
         uses: actions/setup-go@v1
         with:
           go-version: "${{ env.GOLANG_VERSION }}"
 
       - name: Build the CLI
-        run: go build -trimpath --ldflags "-X main.version=${{ needs.create-release.outputs.version }}" -o 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
+        run: task build
+        env:
+          VERSION: ${{ needs.create-release.outputs.version }}
 
-      - name: upload to release - linux
-        if: "startswith(runner.os, 'linux')"
-        run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
+      - name: upload to release
+        run: task release:upload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: upload to release - macOS
-        if: "startswith(runner.os, 'macOS')"
-        run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: upload to release - Windows
-        if: "startswith(runner.os, 'Windows')"
-        run: gh.exe release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.create-release.outputs.version }}
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
@@ -92,27 +85,3 @@ jobs:
         if: "startswith(runner.os, 'Windows')"
         run: Get-FileHash -Algorithm SHA256 -Path ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
         
-
-      # - name: upload to release
-      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: upload to release (linux)
-      #   if: "startsWith(runner.os, 'Linux')"
-      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 
-      # - name: upload to release (macos)
-      #   if: "startsWith(runner.os, 'macOS')"
-      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 
-      # - name: upload to release (windows)
-      #   if: "startsWith(runner.os, 'Windows')"
-      #   run: gh release upload ${{ needs.create-release.outputs.version }} ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.exe
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 
