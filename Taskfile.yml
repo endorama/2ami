@@ -1,0 +1,39 @@
+version: '3'
+
+# includes:
+#   checksum: ./Taskfile_checksum_{{OS}}.yml 
+
+tasks:
+  build:
+    cmds:
+      - >
+        go build -v -trimpath 
+        --ldflags "-X main.version=$VERSION" 
+        -o 2ami-$VERSION-$OS-$ARCH{{exeExt}}
+    env:
+      VERSION: dev
+      OS: "{{OS}}"
+      ARCH: "{{ARCH}}"
+      CGO_ENABLED: 1
+
+  checksum:upload:
+    cmds:
+      - gh release upload $VERSION ./checksum-2ami-$VERSION-$OS-$ARCH.txt
+    env:
+      VERSION: dev
+      OS: "{{OS}}"
+      ARCH: "{{ARCH}}"
+    preconditions:
+      - sh: "[ '$GITHUB_TOKEN' != "" ]"
+        msg: "GITHUB_TOKEN must be set"
+
+  release:upload:
+    cmds:
+      - gh release upload $VERSION ./2ami-$VERSION-$OS-$ARCH{{exeExt}}
+    env:
+      VERSION: dev
+      OS: "{{OS}}"
+      ARCH: "{{ARCH}}"
+    preconditions:
+      - sh: "[ '$GITHUB_TOKEN' != "" ]"
+        msg: "GITHUB_TOKEN must be set"
