@@ -73,15 +73,18 @@ jobs:
       #   with:
       #     limit-access-to-actor: true
 
-      - name: create checksum - linux
-        if: "startswith(runner.os, 'linux')"
-        run: sha256sum 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
+      # - name: create checksum
+      #   run: task checksum:create
 
-      - name: create checksum - macOS
-        if: "startswith(runner.os, 'macOS')"
-        run: shasum -a 256 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
+      # - name: create checksum - linux
+      #   if: "startswith(runner.os, 'linux')"
+      #   run: sha256sum 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
 
-      - name: create checksum - Windows
-        if: "startswith(runner.os, 'Windows')"
-        run: Get-FileHash -Algorithm SHA256 -Path ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
+      # - name: create checksum - macOS
+      #   if: "startswith(runner.os, 'macOS')"
+      #   run: shasum -a 256 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
+
+      # - name: create checksum - Windows
+      #   if: "startswith(runner.os, 'Windows')"
+      #   run: Get-FileHash -Algorithm SHA256 -Path ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
         
