@@ -11,7 +11,7 @@ jobs:
   nightly:
     strategy:
       matrix:
-        operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
+        operating-system: [ubuntu-20.04, windows-2019, macos-11]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
