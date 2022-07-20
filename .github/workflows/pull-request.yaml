@@ -25,6 +25,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
+          skip-go-installation: true
           version: v1.33
 
   # Run tests on all platform, as part of the code in 99designs/keyring is platform specific
