@@ -40,7 +40,8 @@ jobs:
     needs: create-release
     strategy:
       matrix:
-        operating-system: [ubuntu-20.04, windows-2019, macOS-10.14]
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+        operating-system: [ubuntu-20.04, windows-2019, macos-11]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
