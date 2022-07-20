@@ -26,7 +26,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           skip-go-installation: true
-          version: v1.33
+          version: v1.46
 
   # Run tests on all platform, as part of the code in 99designs/keyring is platform specific
   # To prevent nightly from breaking due to changes introduced from a PR, run tests across all
