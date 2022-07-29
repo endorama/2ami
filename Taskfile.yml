@@ -9,12 +9,38 @@ tasks:
       - >
         go build -v -trimpath 
         --ldflags "-X main.version=$VERSION" 
-        -o 2ami-$VERSION-$OS-$ARCH{{exeExt}}
+        -o {{.BUILD_NAME}}
     env:
       VERSION: dev
       OS: "{{OS}}"
       ARCH: "{{ARCH}}"
       CGO_ENABLED: 1
+    vars:
+      BUILD_NAME:
+        sh: task build:name
+
+  build:name:
+    cmds:
+      - echo {{OS}}-{{ARCH}}
+      - task: "build:name:{{OS}}-{{ARCH}}"
+
+  build:name:linux-amd64:
+    cmds:
+      - echo "2ami-$VERSION-linux-amd64"
+    env:
+      VERSION: dev
+
+  build:name:macos-11-amd64:
+    cmds:
+      - echo "2ami-$VERSION-linux-amd64"
+    env:
+      VERSION: dev
+
+  build:name:Windows_NT-amd64:
+    cmds:
+      - echo "2ami-$VERSION-windows-amd64"
+    env:
+      VERSION: dev
 
   checksum:upload:
     cmds:
