@@ -28,17 +28,12 @@ jobs:
       - name: Run tests
         run: go test -v
 
+      - run: task build:name
+      
       - name: Build the CLI
-        run: go build -trimpath --ldflags "-X main.version=${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
+        run: task build
 
       - uses: actions/upload-artifact@v2
-        if: "startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')"
         with:
           name: "artifact-${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
-          path: ./2ami
-
-      - uses: actions/upload-artifact@v2
-        if: "startsWith(runner.os, 'Windows')"
-        with:
-          name: "artifact-${{ matrix.operating-system }}.${{ github.run_id }}.${{ github.run_number }}"
-          path: ./2ami.exe
+          path: ./$(task build:name)
