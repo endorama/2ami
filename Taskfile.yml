@@ -23,13 +23,13 @@ tasks:
     cmds:
       - task: "build:name:{{OS}}-{{ARCH}}"
 
-  build:name:linux-amd64:
+  build:name:darwin-amd64:
     cmds:
-      - echo "2ami-$VERSION-linux-amd64"
+      - echo "2ami-$VERSION-darwim-amd64"
     env:
       VERSION: dev
 
-  build:name:macos-11-amd64:
+  build:name:linux-amd64:
     cmds:
       - echo "2ami-$VERSION-linux-amd64"
     env:
