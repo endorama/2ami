@@ -20,6 +20,9 @@ jobs:
       - uses: endorama/asdf-parse-tool-versions@v1
         id: versions
 
+      - name: Install Task
+        uses: arduino/setup-task@v1
+
       - name: install Go
         uses: actions/setup-go@v1
         with: 
