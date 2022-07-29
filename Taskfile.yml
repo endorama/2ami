@@ -35,7 +35,7 @@ tasks:
     env:
       VERSION: dev
 
-  build:name:Windows_NT-amd64:
+  build:name:windows-amd64:
     cmds:
       - echo "2ami-$VERSION-windows-amd64"
     env:
