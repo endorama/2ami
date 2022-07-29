@@ -21,7 +21,6 @@ tasks:
 
   build:name:
     cmds:
-      - echo {{OS}}-{{ARCH}}
       - task: "build:name:{{OS}}-{{ARCH}}"
 
   build:name:linux-amd64:
