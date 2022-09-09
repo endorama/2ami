@@ -25,7 +25,7 @@ tasks:
 
   build:name:darwin-amd64:
     cmds:
-      - echo "2ami-$VERSION-darwim-amd64"
+      - echo "2ami-$VERSION-darwin-amd64"
     env:
       VERSION: dev
 
