@@ -52,6 +52,8 @@ jobs:
 
       - name: Install Task
         uses: arduino/setup-task@v1
+        with:
+          version: "${{ env.TASK_VERSION }}"
 
       - name: install Go
         uses: actions/setup-go@v1
