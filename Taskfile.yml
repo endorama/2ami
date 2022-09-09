@@ -37,7 +37,7 @@ tasks:
 
   build:name:windows-amd64:
     cmds:
-      - echo "2ami-$VERSION-windows-amd64"
+      - echo "2ami-$VERSION-windows-amd64{{exeExt}}"
     env:
       VERSION: dev
 
@@ -55,7 +55,7 @@ tasks:
 
   release:upload:
     cmds:
-      - gh release upload $VERSION ./{{.BUILD_NAME}}{{exeExt}}
+      - gh release upload $VERSION ./{{.BUILD_NAME}}
     env:
       VERSION: dev
     vars:
