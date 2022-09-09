@@ -63,29 +63,11 @@ jobs:
         env:
           VERSION: ${{ needs.create-release.outputs.version }}
 
+      - run: task build:name
+      - run: ls -alh
+
       - name: upload to release
         run: task release:upload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.create-release.outputs.version }}
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     limit-access-to-actor: true
-
-      # - name: create checksum
-      #   run: task checksum:create
-
-      # - name: create checksum - linux
-      #   if: "startswith(runner.os, 'linux')"
-      #   run: sha256sum 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
-
-      # - name: create checksum - macOS
-      #   if: "startswith(runner.os, 'macOS')"
-      #   run: shasum -a 256 2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }} > checksum-2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}.txt
-
-      # - name: create checksum - Windows
-      #   if: "startswith(runner.os, 'Windows')"
-      #   run: Get-FileHash -Algorithm SHA256 -Path ./2ami-${{ needs.create-release.outputs.version }}-${{ matrix.operating-system }}
-        

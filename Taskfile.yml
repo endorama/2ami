@@ -43,22 +43,24 @@ tasks:
 
   checksum:upload:
     cmds:
-      - gh release upload $VERSION ./checksum-2ami-$VERSION-$OS-$ARCH.txt
+      - gh release upload $VERSION ./checksum-{{.BUILD_NAME}}.txt
     env:
       VERSION: dev
-      OS: "{{OS}}"
-      ARCH: "{{ARCH}}"
+    vars:
+      BUILD_NAME:
+        sh: task build:name
     preconditions:
       - sh: "[ -n \"$GITHUB_TOKEN\" ]"
         msg: "GITHUB_TOKEN must be set"
 
   release:upload:
     cmds:
-      - gh release upload $VERSION ./2ami-$VERSION-$OS-$ARCH{{exeExt}}
+      - gh release upload $VERSION ./{{.BUILD_NAME}}{{exeExt}}
     env:
       VERSION: dev
-      OS: "{{OS}}"
-      ARCH: "{{ARCH}}"
+    vars:
+      BUILD_NAME:
+        sh: task build:name
     preconditions:
       - sh: "[ -n \"$GITHUB_TOKEN\" ]"
         msg: "GITHUB_TOKEN must be set"
