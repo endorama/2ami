@@ -66,7 +66,6 @@ jobs:
           VERSION: ${{ needs.create-release.outputs.version }}
 
       - run: task build:name
-      - run: ls -alh
 
       - name: upload to release
         run: task release:upload
