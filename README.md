@@ -1,4 +1,12 @@
-![go report](https://goreportcard.com/badge/github.com/endorama/2ami)
+<h1 align="center">2ami</h1>
+<p align="center">Your easy 2FA companion that keep the secrets secret.</p>
+
+<p align="center">
+  <img alt="Go report score" src="https://goreportcard.com/badge/github.com/endorama/2ami" >
+  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/endorama/2ami?color=blue">
+  <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/endorama/2ami?label=latest">
+  <img alt="Share on Twitter" src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fendorama%2F2ami%2F" >
+</p>
 
 <img alt="2ami Secure Two Factor Authenticator logo" src="images/logo.svg" width="100%" />
 
@@ -21,6 +29,8 @@ What to dig deeper? Go to the [project wiki](https://github.com/endorama/2ami/wi
 
 None.
 
-## Contributors
+## Stargazers
+[![Stargazers repo roster for @endorama/2ami](https://reporoster.com/stars/endorama/2ami)](https://github.com/endorama/2ami/stargazers)
 
-[@backwards-rat-race](https://github.com/backwards-rat-race)
+## Contributors
+[![Forkers repo roster for @endorama/2ami](https://reporoster.com/forks/endorama/2ami)](https://github.com/endorama/2ami/network/members)
