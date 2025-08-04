@@ -296,16 +296,31 @@ func add(storage Storage, name string, secret string, digits interface{}, interv
 	}
 	key := NewKey(ring, name)
 	if digits != nil {
-		key.Digits, err = convertStringToInt(digits.(string))
-		if err != nil {
-			return fmt.Errorf("cannot convert string to int: %w", err)
+		switch v := digits.(type) {
+		case int:
+			key.Digits = v
+		case string:
+			key.Digits, err = convertStringToInt(v)
+			if err != nil {
+				return fmt.Errorf("cannot convert string to int: %w", err)
+			}
+		default:
+			return fmt.Errorf("unsupported type for digits: %T", digits)
 		}
 	}
 	if interval != nil {
-		key.Interval, err = convertStringToInt(interval.(string))
-		if err != nil {
-			return fmt.Errorf("cannot convert string to int: %w", err)
+		switch v := interval.(type) {
+		case int:
+			key.Interval = v
+		case string:
+			key.Interval, err = convertStringToInt(v)
+			if err != nil {
+				return fmt.Errorf("cannot convert string to int: %w", err)
+			}
+		default:
+			return fmt.Errorf("unsupported type for interval: %T", interval)
 		}
+
 	}
 	err = key.Secret(secret)
 	if err != nil {
