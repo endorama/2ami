@@ -9,12 +9,17 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/99designs/keyring"
-	"github.com/pkg/errors"
-	"golang.org/x/crypto/pbkdf2"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/99designs/keyring"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/pbkdf2"
+)
+
+const (
+	backupFormat2ami = "2ami"
 )
 
 type backup struct {
@@ -48,7 +53,16 @@ func backupAllKeys(storage Storage, password string) (string, error) {
 	return strings.Join(allKeys, "."), nil
 }
 
-func restore(storage Storage, input string, password string) error {
+func restore(storage Storage, input string, password string, format string) error {
+	switch format {
+	case backupFormat2ami:
+		return restore2ami(storage, input, password)
+	default:
+		return fmt.Errorf("unsupported backup format: %s", format)
+	}
+}
+
+func restore2ami(storage Storage, input string, password string) error {
 	sections := strings.Split(input, ".")
 
 	for _, section := range sections {

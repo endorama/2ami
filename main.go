@@ -40,7 +40,7 @@ Usage:
   2ami remove <name> [--verbose]
   2ami rename <old-name> <new-name>
   2ami backup <file-path>
-  2ami restore <file-path>
+  2ami restore <file-path> [--format=<format>]
   2ami -h | --help
   2ami --version
 
@@ -59,6 +59,7 @@ Options:
   --verbose             Enable verbose output.
   --digits=<digits>     Number of token digits.
   --interval=<seconds>  Interval in seconds between token generation.
+  --format=<format>     Backup format to restore from (2ami, aegis, etc.).
   -c --clip             Copy result to the clipboard.
 
 Environment variables:
@@ -181,6 +182,11 @@ func main() {
 			os.Exit(1)
 		}
 
+		format := backupFormat2ami // default format
+		if arguments["--format"] != nil {
+			format = arguments["--format"].(string)
+		}
+
 		data, err := ioutil.ReadFile(backupPath)
 		if err != nil {
 			ui.Error(fmt.Sprintf("Error reading backup file: %s", err))
@@ -193,7 +199,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		err = restore(storage, string(data), password)
+		err = restore(storage, string(data), password, format)
 		if err != nil {
 			ui.Error(fmt.Sprintf("Error during restore: %s", err))
 			os.Exit(1)
