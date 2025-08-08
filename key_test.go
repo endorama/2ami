@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"os"
 	"testing"
 	"time"
 
@@ -52,11 +51,9 @@ func _generateTotp(secret string, digits int) string {
 // openTestKeyring replaces openKeyring function to use a file backend instead
 // This should allow running tests on all platforms without any OS specific
 // dependency.
-func openTestKeyring() (keyring.Keyring, error) {
-	path, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
+func openTestKeyring(t *testing.T) (keyring.Keyring, error) {
+	t.Helper()
+
 	config := keyring.Config{
 		AllowedBackends: []keyring.BackendType{
 			keyring.FileBackend,
@@ -65,7 +62,7 @@ func openTestKeyring() (keyring.Keyring, error) {
 		FilePasswordFunc: func(prompt string) (string, error) {
 			return "password", nil
 		},
-		FileDir: path,
+		FileDir: t.TempDir(),
 	}
 	ring, err := keyring.Open(config)
 	if err != nil {
@@ -77,7 +74,7 @@ func openTestKeyring() (keyring.Keyring, error) {
 func TestKeyGenerateTotp(t *testing.T) {
 	var generatedToken string
 
-	ring, _ := openTestKeyring()
+	ring, _ := openTestKeyring(t)
 
 	key := NewKey(ring, "test")
 	secretValue := "ORSXG5A="
@@ -108,7 +105,7 @@ func TestKeyGenerateTotp(t *testing.T) {
 }
 
 func TestKeyGenerateotpauthURI(t *testing.T) {
-	ring, _ := openTestKeyring()
+	ring, _ := openTestKeyring(t)
 
 	key := NewKey(ring, "test")
 	secretValue := "ORSXG5A="
