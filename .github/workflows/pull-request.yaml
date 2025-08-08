@@ -52,7 +52,7 @@ jobs:
           go-version: "${{ env.GOLANG_VERSION }}"
 
       - name: Run tests
-        run: go test -v
+        run: go test -v ./...
       
       # - name: Setup tmate session
       #   if: "${{ failure() }}"
