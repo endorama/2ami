@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   create-release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-        operating-system: [ubuntu-20.04, windows-2019, macos-11]
+        operating-system: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Checkout
