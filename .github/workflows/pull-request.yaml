@@ -34,7 +34,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        operating-system: [ubuntu-20.04, windows-2019, macos-11]
+        operating-system: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Disable EOL conversions
