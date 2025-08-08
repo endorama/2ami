@@ -7,7 +7,6 @@ import (
 	"encoding/base32"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -169,7 +168,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		err = ioutil.WriteFile(backupPath, []byte(data), 0664)
+		err = os.WriteFile(backupPath, []byte(data), 0664)
 		if err != nil {
 			ui.Error(fmt.Sprintf("Error writing backup file: %s", err))
 			os.Exit(1)
@@ -187,7 +186,7 @@ func main() {
 			format = arguments["--format"].(string)
 		}
 
-		data, err := ioutil.ReadFile(backupPath)
+		data, err := os.ReadFile(backupPath)
 		if err != nil {
 			ui.Error(fmt.Sprintf("Error reading backup file: %s", err))
 			os.Exit(1)
