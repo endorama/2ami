@@ -9,7 +9,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
+	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/hgfischer/go-otp v1.0.0
 	github.com/keybase/go-keychain v0.0.0-20201121013009-976c83ec27a6 // indirect
