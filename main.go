@@ -73,6 +73,14 @@ Environment variables:
 const databaseLocationPerm = 0755
 
 func main() {
+	if err := run(); err != nil {
+		ui.Error(err.Error())
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+func run() error {
 	checkAndEnableDebugMode()
 	debugPrint("Enabled debug logging...")
 
