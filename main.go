@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/base32"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,6 @@ import (
 
 	"github.com/OpenPeeDeeP/xdg"
 	docopt "github.com/docopt/docopt.go"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 
 	"github.com/atotto/clipboard"
@@ -235,9 +235,9 @@ func run() error {
 		return nil
 	}
 	if arguments["list"].(bool) {
-		errors := list(&ui, storage)
-		if len(errors) > 0 {
-			return fmt.Errorf("cannot list keys: %w", errors.Join(errors...))
+		errs := list(&ui, storage)
+		if len(errs) > 0 {
+			return fmt.Errorf("cannot list keys: %w", errors.Join(errs...))
 		}
 		return nil
 	}
