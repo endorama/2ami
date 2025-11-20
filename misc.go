@@ -6,7 +6,6 @@ package main
 import (
 	"encoding/base32"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -20,7 +19,7 @@ func convertStringToInt(value string) (returnValue int, err error) {
 	return returnValue, nil
 }
 
-//nolint
+// nolint
 func base32StringToByte(data string) ([]byte, error) {
 	return base32.StdEncoding.DecodeString(strings.ToUpper(data))
 }
@@ -28,14 +27,5 @@ func base32StringToByte(data string) ([]byte, error) {
 func debugPrint(v string) {
 	if debug {
 		log.Println(v)
-	}
-}
-
-func printErrorsAndExit(errors []error) {
-	if errors != nil {
-		for _, element := range errors {
-			ui.Error(element.Error())
-		}
-		os.Exit(1) // skipcq: RVV-A0003
 	}
 }

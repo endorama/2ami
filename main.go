@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/base32"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,6 @@ import (
 
 	"github.com/OpenPeeDeeP/xdg"
 	docopt "github.com/docopt/docopt.go"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 
 	"github.com/atotto/clipboard"
@@ -73,6 +73,15 @@ Environment variables:
 const databaseLocationPerm = 0755
 
 func main() {
+	if err := run(); err != nil {
+		ui.Error("An unexpected error occurred. Use DEBUG=true to show logs.")
+		ui.Error(err.Error())
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+func run() error {
 	checkAndEnableDebugMode()
 	debugPrint("Enabled debug logging...")
 
@@ -100,20 +109,19 @@ func main() {
 
 	databaseLocation, databaseFilename, err := getDatabaseConfigurations()
 	if err != nil {
-		ui.Error(err.Error())
+		return err
 	}
 
 	debugPrint(fmt.Sprintf("Using database: %s/%s", databaseLocation, databaseFilename))
 
 	err = os.MkdirAll(databaseLocation, databaseLocationPerm)
 	if err != nil {
-		ui.Error(fmt.Sprintf("Cannot create database location; %s", err))
+		return fmt.Errorf("cannot create database location; %w", err)
 	}
 
 	storage := NewStorage(databaseLocation, databaseFilename)
 	if err = storage.Init(); err != nil {
-		ui.Error(fmt.Sprintf("Cannot initialize database; %s", err))
-		os.Exit(1)
+		return fmt.Errorf("cannot initialize database: %w", err)
 	}
 	defer func() {
 		if err := storage.Close(); err != nil {
@@ -128,62 +136,57 @@ func main() {
 	if arguments["add"].(bool) {
 		name := arguments["<name>"].(string)
 		if name == "" {
-			ui.Error("argument 'name' cannot be empty")
-			os.Exit(1)
+			return fmt.Errorf("argument 'name' cannot be empty")
 		}
 
 		err := addWithPrompt(&ui, storage, name, arguments["--digits"], arguments["--interval"])
 		if err != nil {
-			ui.Error("An unexpected error occurred. Use DEBUG=true to show logs.")
 			debugPrint(fmt.Sprintf("%s", err))
-			os.Exit(1)
+			return fmt.Errorf("an unexpected error occurred: %w", err)
 		}
-		os.Exit(0)
+		return nil
 	}
 	if arguments["dump"].(bool) {
 		if arguments["<name>"] == nil {
-			errors := dumpAllKeys(storage)
-			printErrorsAndExit(errors) // this can exit(1)
-			os.Exit(0)
+			errs := dumpAllKeys(storage)
+			if len(errs) > 0 {
+				return fmt.Errorf("cannot dump keys: %w", errors.Join(errs...))
+			}
+			return nil
 		}
 		name := arguments["<name>"].(string)
 		err := dumpKey(storage, name)
 		if err != nil {
-			ui.Error(err.Error())
-			os.Exit(1)
+			return fmt.Errorf("cannot dump key: %w", err)
 		}
-		os.Exit(0)
+		return nil
 	}
 	if arguments["backup"].(bool) {
 		backupPath := arguments["<file-path>"].(string)
 		if backupPath == "" {
-			ui.Error("argument 'file-path' cannot be empty")
-			os.Exit(1)
+			return fmt.Errorf("argument 'file-path' cannot be empty")
 		}
 
 		password, err := ui.AskSecret("Password for backup file: ")
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error reading stdin: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot read stdin: %w", err)
 		}
 
 		data, err := backupAllKeys(storage, password)
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error during backup: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot backup: %w", err)
 		}
 
 		err = os.WriteFile(backupPath, []byte(data), 0664)
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error writing backup file: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot write backup file: %w", err)
 		}
+		return nil
 	}
 	if arguments["restore"].(bool) {
 		backupPath := arguments["<file-path>"].(string)
 		if backupPath == "" {
-			ui.Error("argument 'file-path' cannot be empty")
-			os.Exit(1)
+			return fmt.Errorf("argument 'file-path' cannot be empty")
 		}
 
 		format := backupFormat2ami // default format
@@ -193,36 +196,35 @@ func main() {
 
 		data, err := os.ReadFile(backupPath)
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error reading backup file: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot read backup file: %w", err)
 		}
 
 		password, err := ui.AskSecret("Password for backup file: ")
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error reading stdin: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot read stdin: %w", err)
 		}
 
 		err = restore(storage, string(data), password, format)
 		if err != nil {
-			ui.Error(fmt.Sprintf("Error during restore: %s", err))
-			os.Exit(1)
+			return fmt.Errorf("cannot restore: %w", err)
 		}
+		return nil
 	}
 	if arguments["generate"].(bool) {
 		name := arguments["<name>"].(string)
 		if name == "" {
-			ui.Error("argument 'name' cannot be empty")
-			os.Exit(1)
+			return fmt.Errorf("argument 'name' cannot be empty")
 		}
 		token, err := generate(storage, name)
 		if err != nil {
-			ui.Error(err.Error())
+			return fmt.Errorf("cannot generate token: %w", err)
 		}
 
 		if arguments["--clip"].(bool) {
 			err = clipboard.WriteAll(token.Value)
-			ui.Error(fmt.Sprintf("Cannot copy to clipboard: %s", err))
+			if err != nil {
+				return fmt.Errorf("cannot write to clipboard: %w", err)
+			}
 		} else {
 			if verbose {
 				ui.Info(fmt.Sprintf("%s ( %d seconds left )\n", token.Value, token.ExpiresIn))
@@ -230,43 +232,42 @@ func main() {
 				ui.Info(token.Value)
 			}
 		}
-		os.Exit(0)
+		return nil
 	}
 	if arguments["list"].(bool) {
-		errors := list(&ui, storage)
-		printErrorsAndExit(errors) // this can exit(1)
-		os.Exit(0)
+		errs := list(&ui, storage)
+		if len(errs) > 0 {
+			return fmt.Errorf("cannot list keys: %w", errors.Join(errs...))
+		}
+		return nil
 	}
 	if arguments["remove"].(bool) {
 		name := arguments["<name>"].(string)
 		err := remove(&ui, storage, name)
 		if err != nil {
-			ui.Error(err.Error())
-			os.Exit(1)
+			return fmt.Errorf("cannot remove key: %w", err)
 		}
-		os.Exit(0)
+		return nil
 	}
 	if arguments["rename"].(bool) {
 		oldName := arguments["<old-name>"].(string)
 		newName := arguments["<new-name>"].(string)
 		if oldName == newName {
-			ui.Error("old-name and new-name are equal, aborting")
-			os.Exit(1)
+			return fmt.Errorf("old-name and new-name are equal, halting execution")
 		}
 		err := rename(&ui, storage, oldName, newName)
 		if err != nil {
-			ui.Error(err.Error())
-			os.Exit(1)
+			return fmt.Errorf("cannot rename key: %w", err)
 		}
 		ui.Info("Key renamed")
-		os.Exit(0)
+		return nil
 	}
 	if arguments["--version"].(bool) {
 		ui.Output(version)
-		os.Exit(0)
+		return nil
 	}
 
-	os.Exit(0)
+	return nil
 }
 
 func checkAndEnableDebugMode() {
@@ -398,7 +399,7 @@ func list(ui cli.Ui, storage Storage) (errors []error) {
 	return nil
 }
 
-//nolint
+// nolint
 func deleteAllKeys(storage Storage) {
 	keys, err := storage.ListKey()
 	if err != nil {
