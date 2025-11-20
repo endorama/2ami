@@ -19,7 +19,7 @@ func convertStringToInt(value string) (returnValue int, err error) {
 	return returnValue, nil
 }
 
-//nolint
+// nolint
 func base32StringToByte(data string) ([]byte, error) {
 	return base32.StdEncoding.DecodeString(strings.ToUpper(data))
 }
