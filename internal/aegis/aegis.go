@@ -89,20 +89,21 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
-// Backup represents the top-level Aegis backup structure
+// Backup represents the top-level Aegis backup structure.
 type Backup struct {
 	Version int         `json:"version"`
 	Header  Header      `json:"header"`
-	DB      interface{} `json:"db"` // Can be string (encrypted) or object (plain)
+	// DB can be string (encrypted) or object (plain).
+	DB      interface{} `json:"db"`
 }
 
-// Header contains the encryption slots and parameters
+// Header contains the encryption slots and parameters.
 type Header struct {
 	Slots  []Slot `json:"slots"`
 	Params Params `json:"params"`
 }
 
-// Slot represents an encryption slot (password, biometric, etc.)
+// Slot represents an encryption slot (password, biometric, etc.).
 type Slot struct {
 	Type      int    `json:"type"`
 	UUID      string `json:"uuid"`
@@ -114,20 +115,20 @@ type Slot struct {
 	Salt      string `json:"salt,omitempty"` // scrypt salt
 }
 
-// Params contains encryption parameters (nonce and tag)
+// Params contains encryption parameters (nonce and tag).
 type Params struct {
 	Nonce string `json:"nonce"`
 	Tag   string `json:"tag"`
 }
 
-// DB represents the decrypted database content
+// DB represents the decrypted database content.
 type DB struct {
 	Version int     `json:"version"`
 	Entries []Entry `json:"entries"`
 	Groups  []Group `json:"groups"`
 }
 
-// Entry represents a single TOTP/HOTP entry
+// Entry represents a single TOTP/HOTP entry.
 type Entry struct {
 	Type     string                 `json:"type"`
 	UUID     string                 `json:"uuid"`
@@ -142,13 +143,13 @@ type Entry struct {
 	Groups   []string               `json:"groups"`
 }
 
-// Group represents a group of entries
+// Group represents a group of entries.
 type Group struct {
 	UUID string `json:"uuid"`
 	Name string `json:"name"`
 }
 
-// ParseBackup parses an Aegis backup from JSON
+// ParseBackup parses an Aegis backup from JSON.
 func ParseBackup(data []byte) (*Backup, error) {
 	var backup Backup
 	if err := json.Unmarshal(data, &backup); err != nil {
@@ -157,21 +158,22 @@ func ParseBackup(data []byte) (*Backup, error) {
 	return &backup, nil
 }
 
-// IsEncrypted checks if the backup is encrypted
+// IsEncrypted checks if the backup is encrypted.
 func (b *Backup) IsEncrypted() bool {
 	return len(b.Header.Slots) > 0
 }
 
-// DecryptBackup decrypts an encrypted Aegis backup
+// DecryptBackup decrypts an encrypted Aegis backup.
 func (b *Backup) DecryptBackup(password string) (*DB, error) {
 	if !b.IsEncrypted() {
 		return nil, fmt.Errorf("backup is not encrypted")
 	}
 
-	// Find a password slot (type 1)
+	// Find a password slot (type 1).
 	var passwordSlot *Slot
 	for i := range b.Header.Slots {
-		if b.Header.Slots[i].Type == 1 { // Password slot
+		// Slot of type 1 is the password slot.
+		if b.Header.Slots[i].Type == 1 {
 			passwordSlot = &b.Header.Slots[i]
 			break
 		}
@@ -181,19 +183,18 @@ func (b *Backup) DecryptBackup(password string) (*DB, error) {
 		return nil, fmt.Errorf("no password slot found in Aegis backup")
 	}
 
-	// Derive key using scrypt
 	key, err := deriveKey(password, passwordSlot.Salt, passwordSlot.N, passwordSlot.R, passwordSlot.P)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive key: %w", err)
 	}
 
-	// Decrypt the master key from the slot
+	// Decrypt the master key from the slot.
 	masterKey, err := decryptSlot(key, passwordSlot.Key, passwordSlot.KeyParams.Nonce, passwordSlot.KeyParams.Tag)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decrypt master key: %w", err)
 	}
 
-	// Decrypt the database content
+	// Decrypt the database content.
 	dbString, ok := b.DB.(string)
 	if !ok {
 		return nil, fmt.Errorf("encrypted database should be a string")
@@ -204,7 +205,7 @@ func (b *Backup) DecryptBackup(password string) (*DB, error) {
 		return nil, fmt.Errorf("failed to decrypt database: %w", err)
 	}
 
-	// Parse the decrypted database
+	// Parse the decrypted database.
 	var db DB
 	if err := json.Unmarshal(decryptedDB, &db); err != nil {
 		return nil, fmt.Errorf("failed to parse decrypted database: %w", err)
@@ -213,13 +214,13 @@ func (b *Backup) DecryptBackup(password string) (*DB, error) {
 	return &db, nil
 }
 
-// ParsePlainBackup parses a plain text Aegis backup
+// ParsePlainBackup parses a plain text Aegis backup.
 func (b *Backup) ParsePlainBackup() (*DB, error) {
 	if b.IsEncrypted() {
 		return nil, fmt.Errorf("backup is encrypted, use DecryptBackup instead")
 	}
 
-	// For plain text backups, the DB field should be an object
+	// For plain text backups, the DB field should be an object.
 	dbBytes, err := json.Marshal(b.DB)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal plain database: %w", err)
@@ -233,14 +234,13 @@ func (b *Backup) ParsePlainBackup() (*DB, error) {
 	return &db, nil
 }
 
-// deriveKey derives a key using scrypt with Aegis parameters
+// deriveKey derives a key using scrypt with Aegis parameters.
 func deriveKey(password, salt string, n, r, p int) ([]byte, error) {
 	saltBytes, err := hex.DecodeString(salt)
 	if err != nil {
 		return nil, fmt.Errorf("invalid salt: %w", err)
 	}
 
-	// Use scrypt with Aegis parameters
 	key, err := scrypt.Key([]byte(password), saltBytes, n, r, p, 32)
 	if err != nil {
 		return nil, fmt.Errorf("scrypt failed: %w", err)
@@ -249,9 +249,8 @@ func deriveKey(password, salt string, n, r, p int) ([]byte, error) {
 	return key, nil
 }
 
-// decryptSlot decrypts a slot using AES-GCM
+// decryptSlot decrypts a slot using AES-GCM.
 func decryptSlot(key []byte, encryptedKey, nonce, tag string) ([]byte, error) {
-	// Decode the encrypted key and parameters
 	encryptedBytes, err := hex.DecodeString(encryptedKey)
 	if err != nil {
 		return nil, fmt.Errorf("invalid encrypted key: %w", err)
@@ -267,7 +266,6 @@ func decryptSlot(key []byte, encryptedKey, nonce, tag string) ([]byte, error) {
 		return nil, fmt.Errorf("invalid tag: %w", err)
 	}
 
-	// Create AES-GCM cipher
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create cipher: %w", err)
@@ -278,10 +276,10 @@ func decryptSlot(key []byte, encryptedKey, nonce, tag string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create GCM: %w", err)
 	}
 
-	// Combine ciphertext and tag (tag is appended, not prepended)
+	// Combine ciphertext and tag (tag is appended, not prepended).
 	ciphertext := append(encryptedBytes, tagBytes...)
 
-	// Decrypt
+	// Decrypt.
 	plaintext, err := gcm.Open(nil, nonceBytes, ciphertext, nil)
 	if err != nil {
 		return nil, fmt.Errorf("decryption failed: %w", err)
@@ -292,13 +290,11 @@ func decryptSlot(key []byte, encryptedKey, nonce, tag string) ([]byte, error) {
 
 // decryptDB decrypts the database content using AES-GCM
 func decryptDB(masterKey []byte, encryptedDB string, params Params) ([]byte, error) {
-	// Decode the encrypted database
 	encryptedBytes, err := base64.StdEncoding.DecodeString(encryptedDB)
 	if err != nil {
 		return nil, fmt.Errorf("invalid encrypted database: %w", err)
 	}
 
-	// Decode parameters
 	nonceBytes, err := hex.DecodeString(params.Nonce)
 	if err != nil {
 		return nil, fmt.Errorf("invalid nonce: %w", err)
@@ -309,7 +305,6 @@ func decryptDB(masterKey []byte, encryptedDB string, params Params) ([]byte, err
 		return nil, fmt.Errorf("invalid tag: %w", err)
 	}
 
-	// Create AES-GCM cipher
 	block, err := aes.NewCipher(masterKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create cipher: %w", err)
@@ -320,10 +315,10 @@ func decryptDB(masterKey []byte, encryptedDB string, params Params) ([]byte, err
 		return nil, fmt.Errorf("failed to create GCM: %w", err)
 	}
 
-	// Combine ciphertext and tag (tag is appended, not prepended)
+	// Combine ciphertext and tag (tag is appended, not prepended).
 	ciphertext := append(encryptedBytes, tagBytes...)
 
-	// Decrypt
+	// Decrypt.
 	plaintext, err := gcm.Open(nil, nonceBytes, ciphertext, nil)
 	if err != nil {
 		return nil, fmt.Errorf("decryption failed: %w", err)
