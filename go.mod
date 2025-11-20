@@ -2,6 +2,8 @@ module github.com/endorama/2ami
 
 go 1.24.0
 
+toolchain go1.24.9
+
 require (
 	github.com/99designs/keyring v1.1.6
 	github.com/OpenPeeDeeP/xdg v1.0.0
