@@ -23,7 +23,7 @@ jobs:
         run: "exit $(gofmt | wc -l)"
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v9
         with:
           skip-go-installation: true
           version: v1.46
