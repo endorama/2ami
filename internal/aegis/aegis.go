@@ -159,7 +159,7 @@ func ParseBackup(data []byte) (*Backup, error) {
 
 // IsEncrypted checks if the backup is encrypted
 func (b *Backup) IsEncrypted() bool {
-	return b.Header.Slots != nil && len(b.Header.Slots) > 0
+	return len(b.Header.Slots) > 0
 }
 
 // DecryptBackup decrypts an encrypted Aegis backup
