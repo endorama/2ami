@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"sort"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 // setupTestStorage creates and initializes a storage instance for testing
@@ -24,7 +26,7 @@ func setupTestStorage(t *testing.T) (Storage, func()) {
 	}
 
 	cleanup := func() {
-		storage.Close()
+		require.NoError(t, storage.Close())
 	}
 
 	return storage, cleanup
@@ -75,7 +77,7 @@ func TestStorage_Init_InvalidPath(t *testing.T) {
 
 	err := storage.Init()
 	if err == nil {
-		storage.Close()
+		require.NoError(t, storage.Close())
 		t.Error("Expected Init() to fail with invalid path")
 	}
 }
@@ -84,10 +86,10 @@ func TestStorage_Close(t *testing.T) {
 	storage, _ := setupTestStorage(t)
 
 	// Should not panic
-	storage.Close()
+	require.NoError(t, storage.Close())
 
 	// Multiple closes should not panic
-	storage.Close()
+	require.NoError(t, storage.Close())
 }
 
 func TestStorage_AddKey(t *testing.T) {

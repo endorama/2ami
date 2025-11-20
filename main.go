@@ -115,6 +115,11 @@ func main() {
 		ui.Error(fmt.Sprintf("Cannot initialize database; %s", err))
 		os.Exit(1)
 	}
+	defer func() {
+		if err := storage.Close(); err != nil {
+			ui.Warn(fmt.Sprintf("cannot close database: %s", err))
+		}
+	}()
 
 	verbose = arguments["--verbose"].(bool)
 

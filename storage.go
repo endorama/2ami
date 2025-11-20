@@ -51,8 +51,8 @@ func (s *Storage) Init() error {
 	return nil
 }
 
-func (s *Storage) Close() {
-	s.db.Close()
+func (s *Storage) Close() error {
+	return s.db.Close()
 }
 
 func (s *Storage) AddKey(key string, value []byte) (bool, error) {
