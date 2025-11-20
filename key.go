@@ -141,10 +141,11 @@ func (k Key) OtpauthURI() (string, error) {
 	q.Set("secret", string(secret))
 	q.Set("digits", fmt.Sprint(k.Digits))
 
-	if k.Type == TOTP_TOKEN {
+	switch k.Type {
+	case TOTP_TOKEN:
 		out.Host = "totp"
 		q.Set("period", fmt.Sprint(k.Interval))
-	} else if k.Type == HOTP_TOKEN {
+	case HOTP_TOKEN:
 		out.Host = "hotp"
 		q.Set("counter", fmt.Sprint(k.Counter))
 	}
