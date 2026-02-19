@@ -8,13 +8,13 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
 
 	"github.com/99designs/keyring"
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/pbkdf2"
 
 	"github.com/endorama/2ami/internal/aegis"

@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/base32"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,6 @@ import (
 
 	"github.com/OpenPeeDeeP/xdg"
 	docopt "github.com/docopt/docopt.go"
-	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 
 	"github.com/atotto/clipboard"

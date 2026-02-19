@@ -7,8 +7,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/boltdb/bolt"
-	"github.com/pkg/errors"
+	"go.etcd.io/bbolt"
 )
 
 const (
@@ -16,7 +15,7 @@ const (
 )
 
 type Storage struct {
-	db       *bolt.DB
+	db       *bbolt.DB
 	filename string
 	folder   string
 }
@@ -31,13 +30,13 @@ func NewStorage(folder string, filename string) Storage {
 }
 
 func (s *Storage) Init() error {
-	db, err := bolt.Open(filepath.Join(s.folder, s.filename), 0600, nil)
+	db, err := bbolt.Open(filepath.Join(s.folder, s.filename), 0600, nil)
 	if err != nil {
 		return fmt.Errorf("cannot open database: %w", err)
 	}
 	s.db = db
 
-	err = db.Update(func(tx *bolt.Tx) error {
+	err = db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(dbBucket))
 		if err != nil {
 			return fmt.Errorf("cannot create bucket: %w", err)
@@ -56,7 +55,7 @@ func (s *Storage) Close() error {
 }
 
 func (s *Storage) AddKey(key string, value []byte) (bool, error) {
-	err := s.db.Update(func(tx *bolt.Tx) error {
+	err := s.db.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(dbBucket))
 
 		err := bucket.Put([]byte(key), value)
@@ -74,7 +73,7 @@ func (s *Storage) AddKey(key string, value []byte) (bool, error) {
 
 func (s *Storage) ListKey() ([]string, error) {
 	var keys []string
-	err := s.db.View(func(tx *bolt.Tx) error {
+	err := s.db.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(dbBucket))
 		c := b.Cursor()
 
@@ -94,11 +93,11 @@ func (s *Storage) ListKey() ([]string, error) {
 
 func (s *Storage) GetKey(key string) ([]byte, error) {
 	var value []byte
-	err := s.db.View(func(tx *bolt.Tx) error {
+	err := s.db.View(func(tx *bbolt.Tx) error {
 		// Assume bucket exists and has keys
 		bucket := tx.Bucket([]byte(dbBucket))
 		if bucket == nil {
-			return errors.New(fmt.Sprintf("bucket %s not found", dbBucket))
+			return fmt.Errorf("bucket %s not found", dbBucket)
 		}
 
 		value = bucket.Get([]byte(key))
@@ -113,16 +112,16 @@ func (s *Storage) GetKey(key string) ([]byte, error) {
 }
 
 func (s *Storage) RemoveKey(key string) error {
-	err := s.db.Update(func(tx *bolt.Tx) error {
+	err := s.db.Update(func(tx *bbolt.Tx) error {
 		// Assume bucket exists and has keys
 		bucket := tx.Bucket([]byte(dbBucket))
 		if bucket == nil {
-			return errors.New(fmt.Sprintf("bucket %s not found", dbBucket))
+			return fmt.Errorf("bucket %s not found", dbBucket)
 		}
 
 		err := bucket.Delete([]byte(key))
 		if err != nil {
-			return errors.New(fmt.Sprintf("cannot delete %s: %s", key, err))
+			return fmt.Errorf("cannot delete %s: %w", key, err)
 		}
 
 		return nil

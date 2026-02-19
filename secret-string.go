@@ -4,10 +4,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/99designs/keyring"
-	"github.com/pkg/errors"
 )
 
 // SecretString represent a named string in a secure storage
